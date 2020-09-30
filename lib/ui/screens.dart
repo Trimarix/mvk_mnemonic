@@ -123,9 +123,7 @@ class QuizScreenState extends State<QuizScreen> {
                     splashColor: Colors.green,
                     highlightedBorderColor: Colors.orange,
                     onPressed: () {
-                      setState(() {
-                        _answerShown = true;
-                      });
+                      setState(() => _showAnswer());
                     },
                     child: Text("Lösung anzeigen"),
                   ),
@@ -202,9 +200,9 @@ class QuizScreenState extends State<QuizScreen> {
                       icon: Text("="),
                     ),
                     onSubmitted: (val) {
-                      setState(() {
-                        _answerShown = true;
-                      });
+                      setState(() => _showAnswer(
+                          _inputFieldCtrl.text.trim() == _selectedTask.a)
+                      );
                     },
                   ),
                 ),
@@ -232,7 +230,7 @@ class QuizScreenState extends State<QuizScreen> {
                   child: OutlineButton(
                     child: Text("weiter"),
                     onPressed: ()
-                      => _next(_inputFieldCtrl.text.trim() == _selectedTask.a),
+                      => _next(),
                   ),
               )
               : Container(width: 0, height: 0,)
@@ -310,6 +308,7 @@ class QuizScreenState extends State<QuizScreen> {
       int selectedIndex = Random().nextInt(_selectableTasks.length);
       selectedTask = _selectableTasks[selectedIndex];
     }
+    return selectedTask;
   }
 
   _toggleStar() {
@@ -319,15 +318,30 @@ class QuizScreenState extends State<QuizScreen> {
     widget._setState(() {});
   }
 
-  _next(bool correct) {
+  _showAnswer([bool correct]) {
     setState(() {
+      if(correct != null) {
+        _selectedTask.asked++;
+        if(correct)
+          _selectedTask.correct++;
+      }
+      _answerShown = true;
+    });
+    widget._setState(() {});
+  }
+
+  _next([bool correct]) {
+    setState(() {
+      if(correct != null) {
+        _selectedTask.asked++;
+        if(correct)
+          _selectedTask.correct++;
+      }
       _inputFieldCtrl.text = "";
-      _selectedTask.asked++;
-      if(correct)
-        _selectedTask.correct++;
       _selectedTask = _selectTask();
       _answerShown = false;
     });
+    widget._setState(() {});
   }
 
 }

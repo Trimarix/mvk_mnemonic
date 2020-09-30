@@ -110,7 +110,7 @@ loadData() async {
           "iconData": "0x${Icons.error_outline.codePoint.toRadixString(16)}",
           "tasks": List<int>.generate(5, (index) => index +1).convert((number) => {
             "q": "$number!",
-            "a": List<int>.generate(number, (index) => index +2)
+            "a": List<int>.generate(number, (index) => index +1)
                 .fold(1, (value, element) => value*element).toString(),
             "star": false,
             "asked": 0,

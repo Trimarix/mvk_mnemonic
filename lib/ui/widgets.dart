@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:mvk_mnemonic/data/sections.dart';
 import 'package:mvk_mnemonic/ui/screens.dart';
 
+import 'home.dart';
+
 
 class SectionWidget extends StatefulWidget {
 
   final Section _section;
   final bool _isListItem;
 
-  const SectionWidget(this._section, this._isListItem, {Key key}) : super(key: key);
+  const SectionWidget(this._section, this._isListItem, {Key key,}) : super(key: key);
 
 //  @override
 //  State<StatefulWidget> createState() => TransactionWidgetOldState(_ta);
@@ -42,7 +44,9 @@ class SectionWidgetState extends State<SectionWidget> {
             ),
           );
         }
-    )),
+    )).then((value) {
+      context.findAncestorStateOfType<HomeState>().setState(() {});
+    }),
     child: Container(
       height: 100,
       child: Card(
