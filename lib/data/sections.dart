@@ -9,57 +9,49 @@ abstract class Serializable {
 
 class Section extends Serializable {
 
-  static const QTYPE_TEXT = 1;
-  static const ATYPE_TEXT = 1,
-        ATYPE_NUMINPUT = 2;
-
-  int _qtype;
-  int _atype;
+  int _id;
   String _name;
   String _description;
   IconData _iconData;
   List<Task> _tasks;
 
-  Section(this._qtype, this._atype, this._name, this._description,
-      this._iconData, this._tasks) {
-    assert(qtype == QTYPE_TEXT);
-    assert(atype == ATYPE_TEXT || atype == ATYPE_NUMINPUT);
-  }
+  Section(this._id, this._name, this._description,
+      this._iconData, this._tasks);
 
-  int get qtype => _qtype;
-  int get atype => _atype;
+  int get id => _id;
   String get name => _name;
   String get description => _description;
   IconData get iconData => _iconData;
   List<Task> get tasks => _tasks;
 
-  int get staredTasks => _tasks.convert((Task t) => t.star ? 1 : 0)
+  int get staredTasks => _tasks.convert((int i, Task t) => t.star ? 1 : 0)
       .fold(0, (value, elem) => value + elem);
-  int get askedTasks => _tasks.convert((Task t) => t.asked > 0 ? 1 : 0)
+  int get askedTasks => _tasks.convert((int i, Task t) => t.asked > 0 ? 1 : 0)
       .fold(0, (value, elem) => value + elem);
-  int get correctTasks => _tasks.convert((Task t) => t.correct > 0 ? 1 : 0)
+  int get correctTasks => _tasks.convert((int i, Task t) => t.correct > 0 ? 1 : 0)
       .fold(0, (value, elem) => value + elem);
 
   @override
   @mustCallSuper
   Map<String, dynamic> serialize() => {
-    "qtype": _qtype,
-    "atype": _atype,
+    "id": _id,
     "name": _name,
     "description": _description,
     "iconData": "0x${_iconData.codePoint.toRadixString(16)}",
-    "tasks": _tasks.convert((task) => task.serialize()),
+    "tasks": _tasks.convert((int i, task) => task.serialize()),
   };
 
-  static Section deserialize(Map<String, dynamic> configValues) => Section(
-    configValues["qtype"],
-    configValues["atype"],
+  static Section deserialize(Map<String, dynamic> configValues) {
+    int id = configValues["id"];
+    return Section(
+    id,
     configValues["name"],
     configValues["description"],
     IconData(int.parse(configValues["iconData"]), fontFamily: "MaterialIcons"),
     (configValues["tasks"] as List<Map<String, dynamic>>)
-        .convert((serializedTask) => Task.deserialize(serializedTask)),
+        .convert((int i, serializedTask) => Task.deserialize(id, serializedTask)),
   );
+  }
 
 }
 
@@ -67,15 +59,29 @@ class Section extends Serializable {
 
 class Task extends Serializable {
 
+  static const QTYPE_TEXT = 1;
+  static const ATYPE_TEXT = 1,
+               ATYPE_NUMINPUT = 2;
+
+  int id;
+  int sectionID;
+  int qtype;
+  int atype;
   String q, a;
   bool star;
   int asked;
   int correct;
 
-  Task(this.q, this.a, this.star, this.asked, this.correct);
+  Task(this.id, this.sectionID, this.qtype, this.atype, this.q, this.a, this.star, this.asked, this.correct) {
+    assert(qtype == QTYPE_TEXT);
+    assert(atype == ATYPE_TEXT || atype == ATYPE_NUMINPUT);
+  }
 
   @override
   Map<String, dynamic> serialize() => {
+    "id": "$sectionID:$id",
+    "qtype": qtype,
+    "atype": atype,
     "q": q,
     "a": a,
     "star": star,
@@ -83,7 +89,11 @@ class Task extends Serializable {
     "correct": correct,
   };
 
-  static Task deserialize(Map<String, dynamic> configValues) => Task(
+  static Task deserialize(int sectionID, Map<String, dynamic> configValues) => Task(
+    configValues["id"],
+    sectionID,
+    configValues["qtype"],
+    configValues["atype"],
     configValues["q"],
     configValues["a"],
     configValues["star"],

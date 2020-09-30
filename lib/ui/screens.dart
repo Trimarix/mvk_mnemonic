@@ -7,6 +7,8 @@ import 'package:mvk_mnemonic/data/sections.dart';
 import 'package:mvk_mnemonic/main.dart';
 import 'package:mvk_mnemonic/ui/widgets.dart';
 
+import 'dialogs.dart';
+
 
 class SectionScreen extends StatefulWidget {
 
@@ -21,14 +23,14 @@ class SectionScreen extends StatefulWidget {
 
 class SectionScreenState extends State<SectionScreen> {
 
-  Map<Task, Section> _tasks;
+  List<Task> _tasks;
 
 
   @override
   void initState() {
     super.initState();
-    _tasks = {};
-    widget._section.tasks.forEach((Task task) =>_tasks[task] = widget._section);
+    _tasks = [];
+    widget._section.tasks.forEach((Task task) =>_tasks.add(task));
   }
 
   @override
@@ -55,7 +57,7 @@ class SectionScreenState extends State<SectionScreen> {
 
 class QuizScreen extends StatefulWidget {
 
-  final Map<Task, Section> _tasks;
+  final List<Task> _tasks;
   final Function(void Function()) _setState;
 
   QuizScreen(this._tasks, this._setState) {
@@ -69,7 +71,7 @@ class QuizScreen extends StatefulWidget {
 
 class QuizScreenState extends State<QuizScreen> {
 
-  List<Task> _selectableTasks;
+  List<int> _askedTasks;
   Task _selectedTask;
   bool _keyboardShown;
   bool _answerShown;
@@ -78,7 +80,7 @@ class QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-    _selectableTasks = widget._tasks.keys.toList();
+    _askedTasks = [];
     _selectedTask = _selectTask();
     _keyboardShown = false;
     _answerShown = false;
@@ -92,10 +94,10 @@ class QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     Column taskColumn;
-    var qtype = widget._tasks[_selectedTask].qtype;
-    var atype = widget._tasks[_selectedTask].atype;
+    var qtype = _selectedTask.qtype;
+    var atype = _selectedTask.atype;
 
-    if(qtype == Section.QTYPE_TEXT) {
+    if(qtype == Task.QTYPE_TEXT) {
       var qview = TeXView(
         child: TeXViewDocument(
           r"$$" + _selectedTask.q + r"$$",
@@ -108,7 +110,7 @@ class QuizScreenState extends State<QuizScreen> {
         ),
       );
 
-      if(atype == Section.ATYPE_TEXT) {
+      if(atype == Task.ATYPE_TEXT) {
         taskColumn = Column(
           children: <Widget>[
             qview,
@@ -179,7 +181,7 @@ class QuizScreenState extends State<QuizScreen> {
                 ),
           ],
         );
-      } else if(atype == Section.ATYPE_NUMINPUT) {
+      } else if(atype == Task.ATYPE_NUMINPUT) {
         taskColumn = Column(
           children: <Widget>[
             Row(
@@ -269,14 +271,14 @@ class QuizScreenState extends State<QuizScreen> {
                     child: Column(
                       children: <Widget>[
                         Center(
-                            child: Icon(widget._tasks[_selectedTask].iconData, size: 60,)
+                            child: Icon(getSectionByID(_selectedTask.sectionID).iconData, size: 60,)
                         ),
                         Text(
-                          widget._tasks[_selectedTask].name,
+                          getSectionByID(_selectedTask.sectionID).name,
                           style: Theme.of(context).textTheme.headline6,
                         ),
                         Divider(height: 30,),
-                        Text(widget._tasks[_selectedTask].description),
+                        Text(getSectionByID(_selectedTask.sectionID).description),
                       ],
                     )
                   )
@@ -285,7 +287,7 @@ class QuizScreenState extends State<QuizScreen> {
                 right: 0,
                 left: 0,
                 child: Center(
-                    child: Text(widget._tasks[_selectedTask].description)
+                    child: Text(getSectionByID(_selectedTask.sectionID).description)
                 )
             ),
             Positioned(
@@ -301,12 +303,21 @@ class QuizScreenState extends State<QuizScreen> {
   }
 
   Task _selectTask() {
+    if(widget._tasks.length == _askedTasks.length)
+      return null;
+
+    List<int> unaskedTasks = [];
+    for(int i = 0; i < widget._tasks.length; i++) {
+      if(!_askedTasks.contains(i))
+        unaskedTasks.add(i);
+    }
+
     Task selectedTask;
     if(/*selectedMode*/false) {
 
     } else {
-      int selectedIndex = Random().nextInt(_selectableTasks.length);
-      selectedTask = _selectableTasks[selectedIndex];
+      int selectedIndex = Random().nextInt(unaskedTasks.length);
+      selectedTask = widget._tasks[unaskedTasks[selectedIndex]];
     }
     return selectedTask;
   }
@@ -321,6 +332,7 @@ class QuizScreenState extends State<QuizScreen> {
   _showAnswer([bool correct]) {
     setState(() {
       if(correct != null) {
+        _askedTasks.add(widget._tasks.indexOf(_selectedTask));
         _selectedTask.asked++;
         if(correct)
           _selectedTask.correct++;
@@ -333,13 +345,40 @@ class QuizScreenState extends State<QuizScreen> {
   _next([bool correct]) {
     setState(() {
       if(correct != null) {
+        _askedTasks.add(widget._tasks.indexOf(_selectedTask));
         _selectedTask.asked++;
         if(correct)
           _selectedTask.correct++;
       }
-      _inputFieldCtrl.text = "";
-      _selectedTask = _selectTask();
-      _answerShown = false;
+      var newTask = _selectTask();
+      if(newTask != null) {
+        _inputFieldCtrl.text = "";
+        _selectedTask = newTask;
+        _answerShown = false;
+      }
+      else {
+        showDialog(
+          context: context,
+          builder: (context) => Panel(
+            title: "FERTIG!",
+            text: "Der Aufgabenpool ist erschöpft",
+            buttons: [
+              PanelButton(
+                "OKAY",
+                true,
+                false,
+                () async {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+            icon: Icon(Icons.clear),
+            panelContent: Container(),
+            circleColor: Colors.red,
+          ),
+        );
+      }
     });
     widget._setState(() {});
   }
