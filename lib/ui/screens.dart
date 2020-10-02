@@ -217,9 +217,18 @@ class QuizScreenState extends State<QuizScreen> {
                               Icons.check,
                               color: Colors.green,
                             )
-                          : Icon(
-                              Icons.clear,
-                              color: Colors.red,
+                          : Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.clear,
+                                  color: Colors.red,
+                                ),
+                                SizedBox(width: 10,),
+                                Text(
+                                  "(${_selectedTask.a})",
+                                  style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.green),
+                                )
+                              ],
                             ),
                       ],
                     )
