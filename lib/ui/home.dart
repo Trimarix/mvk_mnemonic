@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tex/flutter_tex.dart';
+import 'package:mvk_mnemonic/data/sections.dart';
 import 'package:mvk_mnemonic/ui/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -185,24 +186,52 @@ class HomeState extends State<Home> {
 
 
         SliverAnimatedList(
-          initialItemCount: sections.length,
-          itemBuilder: (context, index, animation) => Hero(
-            tag: "ta${sections[index].name}",
-            child: SectionWidget(sections[index], true),
-            flightShuttleBuilder: (flightContext, animation, flightDirection,
-                fromHeroContext, toHeroContext) {
-              return ScaleTransition(
-                scale: animation.drive(
-                  Tween<double>(begin: 0.0, end: 1.0).chain(
-                    CurveTween(
-                      curve: Interval(0.0, 1.0, curve: PeakQuadraticCurve()),
+          initialItemCount: sections.length +1,
+          itemBuilder: (context, index, animation) {
+            if(index == 0) {
+              return Hero(
+                tag: "ta-favorites}",
+                child: SectionWidget(Section(
+                  0,
+                  "Markiert",
+                  "Markierte Aufgaben",
+                  Icons.star,
+                  getFavoriteTasks(),
+                ), true),
+                flightShuttleBuilder: (flightContext, animation, flightDirection,
+                    fromHeroContext, toHeroContext) {
+                  return ScaleTransition(
+                    scale: animation.drive(
+                      Tween<double>(begin: 0.0, end: 1.0).chain(
+                        CurveTween(
+                          curve: Interval(0.0, 1.0, curve: PeakQuadraticCurve()),
+                        ),
+                      ),
+                    ),
+                    child: (toHeroContext.widget as Hero).child,
+                  );
+                },
+              );
+            }
+            index--;
+            return Hero(
+              tag: "ta${sections[index].name}",
+              child: SectionWidget(sections[index], true),
+              flightShuttleBuilder: (flightContext, animation, flightDirection,
+                  fromHeroContext, toHeroContext) {
+                return ScaleTransition(
+                  scale: animation.drive(
+                    Tween<double>(begin: 0.0, end: 1.0).chain(
+                      CurveTween(
+                        curve: Interval(0.0, 1.0, curve: PeakQuadraticCurve()),
+                      ),
                     ),
                   ),
-                ),
-                child: (toHeroContext.widget as Hero).child,
-              );
-            },
-          ),
+                  child: (toHeroContext.widget as Hero).child,
+                );
+              },
+            );
+          },
         ),
 
       ],

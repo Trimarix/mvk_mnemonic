@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mvk_mnemonic/data/sections.dart';
 import 'package:mvk_mnemonic/ui/screens.dart';
 
+import 'dialogs.dart';
 import 'home.dart';
 
 
@@ -23,7 +24,26 @@ class SectionWidgetState extends State<SectionWidget> {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-    onTap: !widget._isListItem ? () => Navigator.pop(context) : () => Navigator.push(context, PageRouteBuilder(
+    onTap: widget._section.tasks.length == 0
+      ? () => showDialog(
+          context: context,
+          builder: (context) => Panel(
+            title: "Keine markierten Aufgaben",
+            text: "Markiere Aufgaben und versuche es dann nochmal.",
+            buttons: [
+              PanelButton(
+                "OKAY",
+                true,
+                false,
+                () => Navigator.pop(context),
+              ),
+            ],
+            icon: Icon(Icons.info),
+            panelContent: Container(),
+            circleColor: Colors.red,
+          ),
+        )
+      : !widget._isListItem ? () => Navigator.pop(context) : () => Navigator.push(context, PageRouteBuilder(
         transitionDuration: Duration(milliseconds: 600),
         pageBuilder: (context, animation, secondaryAnimation) => Container(
           child: SectionScreen(widget._section),

@@ -57,6 +57,17 @@ Task getTaskByIDs(int sectionID, int taskID, [returnNull = false]) {
   throw Exception("task with id $taskID in section with id $sectionID doesn't exist.");
 }
 
+List<Task> getFavoriteTasks() {
+  List<Task> tasks = [];
+  for(Section s in sections) {
+    for(Task t in s.tasks) {
+      if(t.star)
+        tasks.add(t);
+    }
+  }
+  return tasks;
+}
+
 loadData() async {
   var dataFile = File("${appDirectory.path}/data.json");
   if(dataFile.existsSync()) {
