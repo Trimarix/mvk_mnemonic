@@ -193,7 +193,7 @@ class HomeState extends State<Home> {
                 tag: "ta-favorites}",
                 child: SectionWidget(Section(
                   0,
-                  "Markiert",
+                  "Markierte Aufgaben",
                   "Markierte Aufgaben",
                   Icons.star,
                   getFavoriteTasks(),

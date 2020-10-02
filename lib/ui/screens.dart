@@ -288,6 +288,11 @@ class QuizScreenState extends State<QuizScreen> {
                         ),
                         Divider(height: 30,),
                         Text(getSectionByID(_selectedTask.sectionID).description),
+                        SizedBox(height: 10,),
+                        Text(
+                          "${_selectedTask.correct} / ${_selectedTask.asked}  x  richtig${_selectedTask.asked == 0 ? "" : "   (${(_selectedTask.correct/_selectedTask.asked * 10).round()/10})"}",
+                          style: Theme.of(context).textTheme.caption,
+                        )
                       ],
                     )
                   )
@@ -322,8 +327,13 @@ class QuizScreenState extends State<QuizScreen> {
     }
 
     Task selectedTask;
-    if(/*selectedMode*/false) {
-
+    if(selectedMode) {
+      unaskedTasks.sort((aIndex, bIndex) {
+        var a = widget._tasks[aIndex];
+        var b = widget._tasks[bIndex];
+        return (a.correct / a.asked).compareTo(b.correct / b.asked);
+      });
+      selectedTask = widget._tasks[unaskedTasks[0]];
     } else {
       int selectedIndex = Random().nextInt(unaskedTasks.length);
       selectedTask = widget._tasks[unaskedTasks[selectedIndex]];
