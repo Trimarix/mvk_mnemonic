@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 const BYPASS_SAVING = false;
 
 Directory appDirectory;
+File dataFile;
 PackageInfo packageInfo;
 
 LifecycleObserver lco;
@@ -29,6 +30,7 @@ void main() async {
   WidgetsBinding.instance.addObserver(lco);
 
   appDirectory = await getApplicationDocumentsDirectory();
+  dataFile = File("${appDirectory.path}/data.json");
   await loadData();
 
   runApp(MnemonicApp());
@@ -86,7 +88,6 @@ List<Task> getFavoriteTasks() {
 }
 
 loadData() async {
-  var dataFile = File("${appDirectory.path}/data.json");
   if(dataFile.existsSync()) {
     data = jsonDecode(dataFile.readAsStringSync());
   } else {
@@ -97,7 +98,7 @@ loadData() async {
 
 processData() {
   selectedMode = data["selectedMode"];
-  sections = (data["sections"] as List<Map<String, dynamic>>).convert((int i, serializedSection)
+  sections = (data["sections"] as List<dynamic>).convert((int i, serializedSection)
     => Section.deserialize(serializedSection));
 }
 
@@ -107,6 +108,7 @@ saveData() {
   data["selectedMode"] = selectedMode;
   data["sections"] = sections.convert((index, deserializedSection)
       => deserializedSection.serialize());
+  dataFile.writeAsStringSync(jsonEncode(data));
 }
 
 resetData() {

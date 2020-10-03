@@ -49,7 +49,7 @@ class Section extends Serializable {
     configValues["name"],
     configValues["description"],
     IconData(int.parse(configValues["iconData"]), fontFamily: "MaterialIcons"),
-    (configValues["tasks"] as List<Map<String, dynamic>>)
+    (configValues["tasks"] as List<dynamic>)
         .convert((int i, serializedTask) => Task.deserialize(id, serializedTask)),
   );
   }
@@ -91,7 +91,7 @@ class Task extends Serializable {
   };
 
   static Task deserialize(int sectionID, Map<String, dynamic> configValues) => Task(
-    configValues["id"],
+    int.parse(configValues["id"].split(":")[1]),
     sectionID,
     configValues["qtype"],
     configValues["atype"],

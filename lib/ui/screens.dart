@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_tex/flutter_tex.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:mvk_mnemonic/data/sections.dart';
 import 'package:mvk_mnemonic/main.dart';
 import 'package:mvk_mnemonic/ui/widgets.dart';
@@ -84,7 +84,7 @@ class QuizScreenState extends State<QuizScreen> {
     _selectedTask = _selectTask();
     _keyboardShown = false;
     _answerShown = false;
-    KeyboardVisibilityNotification().addNewListener(onChange: (shown) {
+    KeyboardVisibility.onChange.listen((bool shown) {
       setState(() {
         _keyboardShown = shown;
       });
@@ -331,7 +331,7 @@ class QuizScreenState extends State<QuizScreen> {
       unaskedTasks.sort((aIndex, bIndex) {
         var a = widget._tasks[aIndex];
         var b = widget._tasks[bIndex];
-        return (a.correct / a.asked).compareTo(b.correct / b.asked);
+        return (b.correct / b.asked).compareTo(a.correct / a.asked);
       });
       selectedTask = widget._tasks[unaskedTasks[0]];
     } else {
