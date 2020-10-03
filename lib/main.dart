@@ -256,5 +256,29 @@ final initialData = {
         "correct": 0,
       }),
     },
+    {
+      "id": 8,
+      "name": "Potenzgesetze",
+      "description": "Wie lautet das Äquivalent?",
+      "iconData": "0x${Icons.import_export.codePoint.toRadixString(16)}",
+      "tasks": [
+        ["log(a*b)",         "log(a) + log(b)"],
+        ["log(\frac{a]{b})", "log(a) - log(b)"],
+        ["log(a^r)",         "r * log(a)"],
+
+        ["log(a) + log(b)", "log(a*b)"],
+        ["log(a) - log(b)", "log(\frac{a]{b})"],
+        ["r * log(a)",      "log(a^r)"],
+      ].convert((int index, x) => {
+        "id": "8:${index + 1}",
+        "qtype": 1,
+        "atype": 1,
+        "q": x[0],
+        "a": x[1],
+        "star": false,
+        "asked": 0,
+        "correct": 0,
+      }),
+    },
   ],
 };
