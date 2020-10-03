@@ -154,8 +154,7 @@ class HomeState extends State<Home> {
                     getValue: () {
                       int val = 0;
                       sections.forEach((section) {
-                        if(section.askedTasks > 0)
-                          val++;
+                        val += section.askedTasks;
                       });
                       return val;
                     },
@@ -165,8 +164,7 @@ class HomeState extends State<Home> {
                     getValue: () {
                       int val = 0;
                       sections.forEach((section) {
-                        if(section.correctTasks > 0)
-                          val++;
+                        val += section.correctTasks;
                       });
                       return val;
                     },
@@ -176,8 +174,7 @@ class HomeState extends State<Home> {
                     getValue: () {
                       int val = 0;
                       sections.forEach((section) {
-                        if(section.staredTasks > 0)
-                          val++;
+                        val += section.staredTasks;
                       });
                       return val;
                     },
