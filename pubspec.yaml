@@ -1,4 +1,4 @@
-name: mvk_mnemonic
+name: MVK Merkhilfe
 description: MVK Mnemonic
 
 # The following line prevents the package from being accidentally published to
@@ -37,6 +37,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+add
+  flutter_launcher_icons: "^0.8.0"
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/launcher_icon/icon.png"
+  adaptive_icon_background: "assets/launcher_icon/background.png"
+  adaptive_icon_foreground: "assets/launcher_icon/foreground.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
