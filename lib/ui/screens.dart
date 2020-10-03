@@ -40,7 +40,7 @@ class SectionScreenState extends State<SectionScreen> {
         child: Column(
           children: <Widget>[
             Hero(
-              tag: "ta${widget._section.name}",
+              tag: "ta${widget._section.id}",
               child: SectionWidget(widget._section, false),
             ),
             Divider(height: 30,),

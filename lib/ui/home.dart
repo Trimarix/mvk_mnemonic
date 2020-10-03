@@ -25,13 +25,11 @@ class HomeState extends State<Home> {
                ACTION_NO_NOTHING = -1,
                ACTION_SHOW_INFO = 2;
 
-  // true  => intelligent
-  // false => random
-  var _mode = true;
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) => Scaffold(
-
+    key: scaffoldKey,
     body: CustomScrollView(
       slivers: <Widget>[
         SliverAppBar(
@@ -56,7 +54,7 @@ class HomeState extends State<Home> {
                   }
                 } else {
                   setState(() {
-                    _mode = mode;
+                    selectedMode = mode;
                   });
                 }
               },
@@ -78,13 +76,13 @@ class HomeState extends State<Home> {
                         padding: EdgeInsets.only(right: 10),
                         child: Icon(
                           Icons.wb_incandescent,
-                          color: _mode ? Colors.white : Colors.grey,
+                          color: selectedMode ? Colors.white : Colors.grey,
                         ),
                       ),
                       Text(
                         "intelligent",
                         style: Theme.of(context).textTheme.subtitle1.copyWith(
-                          color: _mode ? Colors.white : Colors.grey,
+                          color: selectedMode ? Colors.white : Colors.grey,
                         ),
                       ),
                     ],
@@ -98,13 +96,13 @@ class HomeState extends State<Home> {
                         padding: EdgeInsets.only(right: 10),
                         child: Icon(
                             Icons.shuffle,
-                            color: !_mode ? Colors.white : Colors.grey
+                            color: !selectedMode ? Colors.white : Colors.grey
                         ),
                       ),
                       Text(
                         "zufällig",
                         style: Theme.of(context).textTheme.subtitle1.copyWith(
-                            color: !_mode ? Colors.white : Colors.grey
+                            color: !selectedMode ? Colors.white : Colors.grey
                         ),
                       ),
                     ],
@@ -197,7 +195,7 @@ class HomeState extends State<Home> {
           itemBuilder: (context, index, animation) {
             if(index == 0) {
               return Hero(
-                tag: "ta-favorites}",
+                tag: "ta0",
                 child: SectionWidget(Section(
                   0,
                   "Markierte Aufgaben",
@@ -222,7 +220,7 @@ class HomeState extends State<Home> {
             }
             index--;
             return Hero(
-              tag: "ta${sections[index].name}",
+              tag: "ta${sections[index].id}",
               child: SectionWidget(sections[index], true),
               flightShuttleBuilder: (flightContext, animation, flightDirection,
                   fromHeroContext, toHeroContext) {
@@ -250,7 +248,7 @@ class HomeState extends State<Home> {
       context: context,
       builder: (context) => Panel(
         title: "Daten zurücksetzen",
-        text: "Deine Daten werden zurückgesetzt.",
+        text: "Deine Daten werden zurückgesetzt. Diese Aktion ist nicht widerrufbar",
         buttons: [
           PanelButton(
             "ABBRECHEN",
@@ -265,6 +263,9 @@ class HomeState extends State<Home> {
             () async {
               await resetData();
               Navigator.pop(context);
+              scaffoldKey.currentState.showSnackBar(SnackBar(
+                content: Text("Die Daten wurden zurückgesetzt."),
+              ));
             },
           ),
         ],
@@ -273,6 +274,8 @@ class HomeState extends State<Home> {
         circleColor: Colors.red,
       ),
     );
+
+    setState(() {});
   }
 
   _showInfo() async {
