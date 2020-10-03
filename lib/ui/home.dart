@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:mvk_mnemonic/data/sections.dart';
 import 'package:mvk_mnemonic/ui/widgets.dart';
@@ -30,6 +31,7 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+
     body: CustomScrollView(
       slivers: <Widget>[
         SliverAppBar(
@@ -290,24 +292,100 @@ class HomeState extends State<Home> {
         icon: Icon(Icons.clear),
         panelContent: Container(
           height: 350,
-          child: ListView(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.link),
-                title: Text("github.com/Trimarix trimarix.de"),
-                subtitle: Text("Github-Repo & Homepage"),
-              ),
-              ListTile(
-                leading: Icon(Icons.build),
-                title: Text("${packageInfo.version} + ${packageInfo.buildNumber}"),
-                subtitle: Text("Version + Build"),
-              ),
-              ListTile(
-                leading: Icon(Icons.description),
-                title: Text("MIT"),
-                subtitle: Text("Lizenz"),
-              )
-            ],
+          child: Scaffold(
+            body: ListView(
+              children: <Widget>[
+                Builder(
+                  builder: (context) => Material(
+                    child: InkWell(
+                      onTap: () async {
+                        await Clipboard.setData(ClipboardData(text: "github.com/Trimarix"));
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text("Kopiert!"),
+                          duration: Duration(seconds: 1, milliseconds: 500),
+                        ));
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.merge_type),
+                        title: Text("github.com/Trimarix"),
+                        subtitle: Text("Github-Repository"),
+                      ),
+                    ),
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.build),
+                  title: Text("${packageInfo.version} + ${packageInfo.buildNumber}"),
+                  subtitle: Text("Version + Build"),
+                ),
+                Material(
+                  child: InkWell(
+                    onTap: () => showDialog(
+                      context: context,
+                      builder: (context) => Panel(
+                        title: "LIZENZ",
+                        text: "MIT-Lizenz",
+                        buttons: [
+                          PanelButton(
+                            "OKAY",
+                            true,
+                            false,
+                            () => Navigator.pop(context),
+                          ),
+                        ],
+                        icon: Icon(Icons.description),
+                        panelContent: Container(
+                          height: 350,
+                          child: ListView(
+                            children: <Widget>[
+                              Text(
+                                  """MIT License
+
+Copyright (c) 2020 Jordan Körte and MVK Mnemonic contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE."""
+                              ),
+                            ],
+                          ),
+                        ),
+                        circleColor: Colors.cyanAccent,
+                      )
+                    ),
+                    child: ListTile(
+                      leading: Icon(Icons.description),
+                      title: Text("Lizenz: MIT-Lizenz"),
+                      subtitle: Text("Bitte klicken"),
+                    ),
+                  ),
+                ),
+                Material(
+                  child: InkWell(
+                    onTap: () => showLicensePage(context: context),
+                    child: ListTile(
+                      leading: Icon(Icons.perm_device_information),
+                      title: Text("Erweiterte Lizenzinformationen"),
+                      subtitle: Text("Bitte klicken"),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         circleColor: Colors.red,
