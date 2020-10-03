@@ -232,53 +232,94 @@ final initialData = {
         "correct": 0,
       }),
     },
-    {
-      "id": 7,
-      "name": "Binomische Formeln",
-      "description": "Wie lautet das Äquivalent?",
-      "iconData": "0x${Icons.linear_scale.codePoint.toRadixString(16)}",
-      "tasks": [
-        ["a^2 + 2ab + b^2", "(a+b)^2"      ],
-        ["a^2 - 2ab + b^2", "(a-b)^2"      ],
-        ["a^2 - b^2",       "(a+b) * (a-b)"],
+    getReversedType1Tasks(7, "Binomische Formeln", "Wie lautet das Äquivalent?", Icons.linear_scale, [
+      ["a^2 + 2ab + b^2", "(a+b)^2"      ],
+      ["a^2 - 2ab + b^2", "(a-b)^2"      ],
+      ["a^2 - b^2",       "(a+b) * (a-b)"],
+    ]),
+    getReversedType1Tasks(8, "Potenzgesetze", "Wie lautet das Äquivalent?", Icons.vertical_align_top, [
+      ["a^x*a^y", "a^{x+y}"],
+      ["a^x*b^x", "(ab)^x"],
+      ["(a^x)^y", "a^{x*y}"],
+      ["a^{−x}",  r"\frac{1}{a^x}"],
+      [r"a^{\frac{p}{q}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"],
+    ]),
+    getReversedType1Tasks(9, "Logarithmengesetze", "Wie lautet das Äquivalent?", Icons.show_chart, [
+      ["log(a*b)",          "log(a) + log(b)"],
+      [r"log(\frac{a}{b})", "log(a) - log(b)"],
+      ["log(a^r)",          "r * log(a)"],
+    ]),
+    getReversedType1Tasks(10, "Additionstheoreme", "Wie lautet das Äquivalent?", Icons.add, [
+      ["sin(x+y)", "sin(x) * cos(y) + cos(x) * sin(y)"],
+      ["cos(x+y)", "cos(x) * cos(y) − sin(x) * sin(y)"],
+      ["sin(2x)",  "2*sin(x)*cos(x)"],
+      ["(sin(x))^2 + (cos(x))^2", "1"],
+      ["(cosh(x))^2 − (sinh(x))^2", "1"]
+    ]),
+    getUnreversedType1Tasks(11, "Werte der tri. Fkt.", "Wie lautet der Wert?", Icons.timeline, [
+      ["sin(0)",              r"\frac{1}{2}*\sqrt{0}"],
+      [r"sin(\frac{\pi}{6})", r"\frac{1}{2}*\sqrt{1}"],
+      [r"sin(\frac{\pi}{4})", r"\frac{1}{2}*\sqrt{2}"],
+      [r"sin(\frac{\pi}{3})", r"\frac{1}{2}*\sqrt{3}"],
+      [r"sin(\frac{\pi}{2})", r"\frac{1}{2}*\sqrt{4}"],
 
-        ["(a+b)^2",       "a^2 + 2ab + b^2"],
-        ["(a-b)^2",       "a^2 - 2ab + b^2"],
-        ["(a+b) * (a-b)", "a^2 - b^2"      ],
-      ].convert((int index, x) => {
-        "id": "7:${index + 1}",
-        "qtype": 1,
-        "atype": 1,
-        "q": x[0],
-        "a": x[1],
-        "star": false,
-        "asked": 0,
-        "correct": 0,
-      }),
-    },
-    {
-      "id": 8,
-      "name": "Potenzgesetze",
-      "description": "Wie lautet das Äquivalent?",
-      "iconData": "0x${Icons.import_export.codePoint.toRadixString(16)}",
-      "tasks": [
-        ["log(a*b)",         "log(a) + log(b)"],
-        ["log(\frac{a]{b})", "log(a) - log(b)"],
-        ["log(a^r)",         "r * log(a)"],
+      ["cos(0)",              r"\frac{1}{2}*\sqrt{4}"],
+      [r"cos(\frac{\pi}{6})", r"\frac{1}{2}*\sqrt{3}"],
+      [r"cos(\frac{\pi}{4})", r"\frac{1}{2}*\sqrt{2}"],
+      [r"cos(\frac{\pi}{3})", r"\frac{1}{2}*\sqrt{1}"],
+      [r"cos(\frac{\pi}{2})", r"\frac{1}{2}*\sqrt{0}"],
 
-        ["log(a) + log(b)", "log(a*b)"],
-        ["log(a) - log(b)", "log(\frac{a]{b})"],
-        ["r * log(a)",      "log(a^r)"],
-      ].convert((int index, x) => {
-        "id": "8:${index + 1}",
-        "qtype": 1,
-        "atype": 1,
-        "q": x[0],
-        "a": x[1],
-        "star": false,
-        "asked": 0,
-        "correct": 0,
-      }),
-    },
+      ["tan(0)",              r"0"],
+      [r"tan(\frac{\pi}{6})", r"\frac{\sqrt{3}}{3}"],
+      [r"tan(\frac{\pi}{4})", r"1"],
+      [r"tan(\frac{\pi}{3})", r"\sqrt{3}"],
+      [r"tan(\frac{\pi}{2})", r"-"],
+
+      ["cot(0)",              r"-"],
+      [r"cot(\frac{\pi}{6})", r"\sqrt{3}"],
+      [r"cot(\frac{\pi}{4})", r"1"],
+      [r"cot(\frac{\pi}{3})", r"\frac{\sqrt{3}}{3}"],
+      [r"cot(\frac{\pi}{2})", r"0"],
+    ]),
+    getReversedType1Tasks(12, "Ableitungen und Stammfunktionen", "Leite ab oder bilde die Stammfunktion", Icons.import_export, [
+      ["(e^x)'",       "e^x"],
+      ["(c^x)'",       "ln(c)*c^x"],
+      ["(ln(|x|))'",   r"\frac{1}{x}"],
+      ["log_c(|x|))'", r"\frac{1}{ln(c)*x}"],
+      ["(sin(x))'",    "cos(x)"],
+      ["(cos(x))'",    "-sin(x)"],
+      ["(tan(x))'",    r"1+(tan(x))^2 = \frac{1}{(cos(x))^2}"],
+      ["(x^a)'",       r"a*x^{a-1}"],
+      ["(arcsin(x))'", r"\frac{1}{\sqrt{1-x^2}}"],
+      ["(arccos(x))'", r"\frac{-1}{\sqrt{1-x^2}}"],
+      ["(arctan(x))'", r"\frac{1}{1+x^2}"],
+      ["(sinh(x))'",   r"cosh(x)"],
+      ["(cosh(x))'",   r"sinh(x)"],
+      ["(tanh(x))'",   r"1-(tanh(x))^2 = \frac{1}{cosh(x)^2}"],
+    ]),
   ],
 };
+
+getUnreversedType1Tasks(int id, String name, String description, IconData iconData, List<List<String>> tasks) => {
+  "id": id,
+  "name": name,
+  "description": description,
+  "iconData": "0x${iconData.codePoint.toRadixString(16)}",
+  "tasks": tasks.convert((int index, x) => {
+    "id": "$id:${index + 1}",
+    "qtype": 1,
+    "atype": 1,
+    "q": x[0],
+    "a": x[1],
+    "star": false,
+    "asked": 0,
+    "correct": 0,
+  }),
+};
+
+getReversedType1Tasks(int id, String name, String description, IconData iconData, List<List<String>> tasks) {
+  var length = tasks.length;
+  for(int i = 0; i < length; i++)
+    tasks.add([tasks[i][1], tasks[i][1]]);
+  return getUnreversedType1Tasks(id, name, description, iconData, tasks);
+}

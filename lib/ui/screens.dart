@@ -105,8 +105,8 @@ class QuizScreenState extends State<QuizScreen> {
         style: TeXViewStyle(
           backgroundColor: Color.fromRGBO(46, 56, 56, 1),
           contentColor: Colors.white,
-          fontStyle: TeXViewFontStyle(fontSize: 22),
-          height: 50,
+          fontStyle: TeXViewFontStyle(fontSize: 17),
+//          height: 70,
         ),
       );
 
@@ -115,7 +115,7 @@ class QuizScreenState extends State<QuizScreen> {
           children: <Widget>[
             qview,
 
-            Divider(height: 30,),
+            Divider(height: 5,),
 
             !_answerShown
               ? SizedBox(
@@ -139,8 +139,8 @@ class QuizScreenState extends State<QuizScreen> {
                       style: TeXViewStyle(
                         backgroundColor: Color.fromRGBO(46, 56, 56, 1),
                         contentColor: Colors.white,
-                        fontStyle: TeXViewFontStyle(fontSize: 22),
-                        height: 50,
+                        fontStyle: TeXViewFontStyle(fontSize: 17),
+//                        height: 70,
                       ),
                     ),
                     SizedBox(height: 10,),
@@ -290,7 +290,7 @@ class QuizScreenState extends State<QuizScreen> {
                         Text(getSectionByID(_selectedTask.sectionID).description),
                         SizedBox(height: 10,),
                         Text(
-                          "${_selectedTask.correct} / ${_selectedTask.asked}  x  richtig${_selectedTask.asked == 0 ? "" : "   (${(_selectedTask.correct/_selectedTask.asked * 10).round()/10})"}",
+                          "${_selectedTask.correct} / ${_selectedTask.asked}  x  richtig${_selectedTask.asked == 0 ? "" : "   (${(_selectedTask.correct/_selectedTask.asked * 100).round()}%)"}",
                           style: Theme.of(context).textTheme.caption,
                         )
                       ],
@@ -305,7 +305,7 @@ class QuizScreenState extends State<QuizScreen> {
                 )
             ),
             Positioned(
-              bottom: _keyboardShown ? 10 : 100,
+              bottom: _keyboardShown ? 10 : 60,
               right: 0,
               left: 0,
               child: taskColumn,
