@@ -141,7 +141,7 @@ final initialData = {
       "description": "Gib das Ergebnis unten ein.",
       "iconData": "0x${Icons.keyboard_arrow_up.codePoint.toRadixString(16)}",
       "tasks": List<int>.generate(30, (index) => index +1).convert((int i, number) => {
-        "id": number,
+        "id": "1:$number",
         "qtype": 1,
         "atype": 2,
         "q": "$number^{2}",
@@ -157,7 +157,7 @@ final initialData = {
       "description": "Gib das Ergebnis unten ein.",
       "iconData": "0x${Icons.looks_two.codePoint.toRadixString(16)}",
       "tasks": List<int>.generate(12, (index) => index +1).convert((int i, number) => {
-        "id": number,
+        "id": "2:$number",
         "qtype": 1,
         "atype": 2,
         "q": "2^{$number}",
@@ -173,7 +173,7 @@ final initialData = {
       "description": "Gib das Ergebnis unten ein.",
       "iconData": "0x${Icons.looks_3.codePoint.toRadixString(16)}",
       "tasks": List<int>.generate(5, (index) => index +1).convert((int i, number) => {
-        "id": number,
+        "id": "3:$number",
         "qtype": 1,
         "atype": 2,
         "q": "3^{$number}",
@@ -189,7 +189,7 @@ final initialData = {
       "description": "Gib das Ergebnis unten ein.",
       "iconData": "0x${Icons.looks_5.codePoint.toRadixString(16)}",
       "tasks": List<int>.generate(4, (index) => index +1).convert((int i, number) => {
-        "id": number,
+        "id": "4:$number",
         "qtype": 1,
         "atype": 2,
         "q": "5^{$number}",
@@ -205,7 +205,7 @@ final initialData = {
       "description": "Gib das Ergebnis unten ein.",
       "iconData": "0x${Icons.looks_6.codePoint.toRadixString(16)}",
       "tasks": List<int>.generate(2, (index) => index +1).convert((int i, number) => {
-        "id": number,
+        "id": "5:$number",
         "qtype": 1,
         "atype": 2,
         "q": "6^{$number}",
@@ -221,7 +221,7 @@ final initialData = {
       "description": "Gib das Ergebnis unten ein.",
       "iconData": "0x${Icons.error_outline.codePoint.toRadixString(16)}",
       "tasks": List<int>.generate(8, (index) => index +1).convert((int i, number) => {
-        "id": number,
+        "id": "6:$number",
         "qtype": 1,
         "atype": 2,
         "q": "$number!",
@@ -246,7 +246,7 @@ final initialData = {
         ["(a-b)^2",       "a^2 - 2ab + b^2"],
         ["(a+b) * (a-b)", "a^2 - b^2"      ],
       ].convert((int index, x) => {
-        "id": index +1,
+        "id": "7:${index + 1}",
         "qtype": 1,
         "atype": 1,
         "q": x[0],
