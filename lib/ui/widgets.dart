@@ -24,6 +24,50 @@ class SectionWidgetState extends State<SectionWidget> {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
+    onLongPress: () => showDialog(
+      context: context,
+      builder: (context) => Panel(
+        title: "ICONS",
+        text: "",
+        buttons: [
+          PanelButton(
+            "OKAY",
+            true,
+            false,
+            () => Navigator.pop(context),
+          ),
+        ],
+        icon: Icon(Icons.info),
+        panelContent: Container(
+          height: 249,
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.assignment_late),
+                title: Text("nicht gefragt"),
+                subtitle: Text("Anzahl der bisher noch nicht abgefragten Aufgaben"),
+              ),
+              ListTile(
+                leading: Icon(Icons.assignment),
+                title: Text("gefragt"),
+                subtitle: Text("Anzahl der bereits abgefragten Aufgaben"),
+              ),
+              ListTile(
+                leading: Icon(Icons.assignment_turned_in),
+                title: Text("korrekt"),
+                subtitle: Text("Anzahl der korrekt beantworteten Aufgaben"),
+              ),
+              ListTile(
+                leading: Icon(Icons.star),
+                title: Text("markiert"),
+                subtitle: Text("Anzahl der markierten Aufgaben"),
+              ),
+            ],
+          ),
+        ),
+        circleColor: Colors.red,
+      ),
+    ),
     onTap: widget._section.tasks.length == 0
       ? () => showDialog(
           context: context,
@@ -92,13 +136,16 @@ class SectionWidgetState extends State<SectionWidget> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Icon(Icons.question_answer),
+                            Icon(Icons.assignment_late, /*size: 24*/ size: 19),
+                            Text(widget._section.unaskedTasks.toString()),
+                            VerticalDivider(width: 10,),
+                            Icon(Icons.assignment, size: 19),
                             Text(widget._section.askedTasks.toString()),
                             VerticalDivider(width: 10,),
-                            Icon(Icons.check),
+                            Icon(Icons.assignment_turned_in, size: 19),
                             Text(widget._section.correctTasks.toString()),
                             VerticalDivider(width: 10,),
-                            Icon(Icons.star),
+                            Icon(Icons.star, size: 19),
                             Text(widget._section.staredTasks.toString()),
                           ],
                         ),

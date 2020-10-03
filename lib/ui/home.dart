@@ -3,6 +3,7 @@ import 'package:flutter_tex/flutter_tex.dart';
 import 'package:mvk_mnemonic/data/sections.dart';
 import 'package:mvk_mnemonic/ui/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:package_info/package_info.dart';
 
 import '../main.dart';
 import 'curves.dart';
@@ -20,7 +21,8 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
 
   static const ACTION_RESET_DATA = 1,
-               ACTION_NO_NOTHING = -1;
+               ACTION_NO_NOTHING = -1,
+               ACTION_SHOW_INFO = 2;
 
   // true  => intelligent
   // false => random
@@ -43,6 +45,9 @@ class HomeState extends State<Home> {
                   switch(mode) {
                     case ACTION_RESET_DATA: {
                       await _resetData();
+                    } break;
+                    case ACTION_SHOW_INFO: {
+                      await _showInfo();
                     } break;
                     case ACTION_NO_NOTHING: {
                     } break;
@@ -128,10 +133,10 @@ class HomeState extends State<Home> {
 
                 PopupMenuItem(
                   child: Text(
-                    "Made with Flutter v1.17.5",
+                    "App-Infos",
                     style: TextStyle(fontFamily: "Courier New", fontSize: 15),
                   ),
-                  value: ACTION_NO_NOTHING,
+                  value: ACTION_SHOW_INFO,
                 ),
               ],
             ),
@@ -263,6 +268,48 @@ class HomeState extends State<Home> {
         ],
         icon: Icon(Icons.clear),
         panelContent: Container(),
+        circleColor: Colors.red,
+      ),
+    );
+  }
+
+  _showInfo() async {
+    await showDialog(
+      context: context,
+      builder: (context) => Panel(
+        title: "APP-INFO & CREDITS",
+        text: "",
+        buttons: [
+          PanelButton(
+            "OKAY",
+            true,
+            false,
+            () => Navigator.pop(context),
+          ),
+        ],
+        icon: Icon(Icons.clear),
+        panelContent: Container(
+          height: 350,
+          child: ListView(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.link),
+                title: Text("github.com/Trimarix trimarix.de"),
+                subtitle: Text("Github-Repo & Homepage"),
+              ),
+              ListTile(
+                leading: Icon(Icons.build),
+                title: Text("${packageInfo.version} + ${packageInfo.buildNumber}"),
+                subtitle: Text("Version + Build"),
+              ),
+              ListTile(
+                leading: Icon(Icons.description),
+                title: Text("MIT"),
+                subtitle: Text("Lizenz"),
+              )
+            ],
+          ),
+        ),
         circleColor: Colors.red,
       ),
     );

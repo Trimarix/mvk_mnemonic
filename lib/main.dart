@@ -6,12 +6,16 @@ import 'package:mvk_mnemonic/data/sections.dart';
 import 'package:mvk_mnemonic/ui/home.dart';
 import 'package:mvk_mnemonic/helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 
 Directory appDirectory;
+PackageInfo packageInfo;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  packageInfo = await PackageInfo.fromPlatform();
 
   appDirectory = await getApplicationDocumentsDirectory();
   await loadData();

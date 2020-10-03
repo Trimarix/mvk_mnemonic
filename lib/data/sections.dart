@@ -28,6 +28,7 @@ class Section extends Serializable {
       .fold(0, (value, elem) => value + elem);
   int get askedTasks => _tasks.convert((int i, Task t) => t.asked > 0 ? 1 : 0)
       .fold(0, (value, elem) => value + elem);
+  int get unaskedTasks => tasks.length - askedTasks;
   int get correctTasks => _tasks.convert((int i, Task t) => t.correct > 0 ? 1 : 0)
       .fold(0, (value, elem) => value + elem);
 
