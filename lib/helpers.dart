@@ -11,6 +11,16 @@ extension XList<E> on List<E> {
     return newList;
   }
 
+  List<E> xadd(E value) {
+    add(value);
+    return this;
+  }
+
+  List<E> xaddAll(Iterable<E> iterable) {
+    addAll(iterable);
+    return this;
+  }
+
 }
 
 class LifecycleObserver extends WidgetsBindingObserver {
