@@ -214,17 +214,17 @@ Map<String, dynamic> initialData() {
         ["(cosh(x))^2 − (sinh(x))^2", "1"]
       ]),
       getUnreversedType1Tasks(13, "Werte der trigonometr. Fktn.", "Wie lautet der Wert?", Icons.timeline, [
-        ["sin(0)",              r"\frac{1}{2}*\sqrt{0}"],
-        [r"sin(\frac{\pi}{6})", r"\frac{1}{2}*\sqrt{1}"],
+        ["sin(0)",              r"\frac{1}{2}*\sqrt{0} = 0"],
+        [r"sin(\frac{\pi}{6})", r"\frac{1}{2}*\sqrt{1} = \frac{1}{2}"],
         [r"sin(\frac{\pi}{4})", r"\frac{1}{2}*\sqrt{2}"],
         [r"sin(\frac{\pi}{3})", r"\frac{1}{2}*\sqrt{3}"],
-        [r"sin(\frac{\pi}{2})", r"\frac{1}{2}*\sqrt{4}"],
+        [r"sin(\frac{\pi}{2})", r"\frac{1}{2}*\sqrt{4} = 1"],
 
-        ["cos(0)",              r"\frac{1}{2}*\sqrt{4}"],
+        ["cos(0)",              r"\frac{1}{2}*\sqrt{4} = 1"],
         [r"cos(\frac{\pi}{6})", r"\frac{1}{2}*\sqrt{3}"],
         [r"cos(\frac{\pi}{4})", r"\frac{1}{2}*\sqrt{2}"],
-        [r"cos(\frac{\pi}{3})", r"\frac{1}{2}*\sqrt{1}"],
-        [r"cos(\frac{\pi}{2})", r"\frac{1}{2}*\sqrt{0}"],
+        [r"cos(\frac{\pi}{3})", r"\frac{1}{2}*\sqrt{1} = \frac{1}{2}"],
+        [r"cos(\frac{\pi}{2})", r"\frac{1}{2}*\sqrt{0} = 0"],
 
         ["tan(0)",              r"0"],
         [r"tan(\frac{\pi}{6})", r"\frac{\sqrt{3}}{3}"],
@@ -325,7 +325,7 @@ getLogs(int id, String name, String description, IconData iconData,
     "id": "$id:${exponent*1000 + radix}",
     "qtype": 1,
     "atype": 2,
-    "q": "log_$radix(${pow(radix, exponent)})",
+    "q": "log_{$radix}(${pow(radix, exponent)})",
     "a": "$exponent",
     "star": false,
     "asked": 0,
@@ -360,6 +360,6 @@ getUnreversedType1Tasks(int id, String name, String description, IconData iconDa
 getReversedType1Tasks(int id, String name, String description, IconData iconData, List<List<String>> tasks) {
   var length = tasks.length;
   for(int i = 0; i < length; i++)
-    tasks.add([tasks[i][1], tasks[i][1]]);
+    tasks.add([tasks[i][1], tasks[i][0]]);
   return getUnreversedType1Tasks(id, name, description, iconData, tasks);
 }
