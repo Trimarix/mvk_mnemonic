@@ -13,7 +13,7 @@
     <application
             android:usesCleartextTraffic="true"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="mvk_mnemonic"
+        android:label="MVK Merkhilfe"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
