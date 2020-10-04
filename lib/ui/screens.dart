@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_tex/flutter_tex.dart';
 import 'package:mvk_mnemonic/data/sections.dart';
 import 'package:mvk_mnemonic/main.dart';
 import 'package:mvk_mnemonic/ui/widgets.dart';
+import 'package:mvk_mnemonic/helpers.dart';
 
 import 'dialogs.dart';
 
@@ -77,6 +79,8 @@ class QuizScreenState extends State<QuizScreen> {
   bool _answerShown;
   var _inputFieldCtrl = TextEditingController();
 
+  StreamSubscription<bool> _keyboardVisibilityStrSub;
+
   @override
   void initState() {
     super.initState();
@@ -84,11 +88,18 @@ class QuizScreenState extends State<QuizScreen> {
     _selectedTask = _selectTask();
     _keyboardShown = false;
     _answerShown = false;
-    KeyboardVisibility.onChange.listen((bool shown) {
+    _keyboardVisibilityStrSub = KeyboardVisibility.onChange.listen((bool shown) {
       setState(() {
         _keyboardShown = shown;
       });
     });
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    _keyboardVisibilityStrSub.cancel();
   }
 
   @override
@@ -328,11 +339,23 @@ class QuizScreenState extends State<QuizScreen> {
 
     Task selectedTask;
     if(selectedMode) {
+      print(unaskedTasks.convert((index, taskIndex) {
+        var task = widget._tasks[taskIndex];
+        return "$taskIndex :: ${task.asked == 0 ? 0 : task.correct/task.asked}";
+      }));
       unaskedTasks.sort((aIndex, bIndex) {
         var a = widget._tasks[aIndex];
         var b = widget._tasks[bIndex];
-        return (b.correct / b.asked).compareTo(a.correct / a.asked);
+        var result = (a.asked == 0 ? 0 : a.correct / a.asked)
+            .compareTo(b.asked == 0 ? 0 : b.correct / b.asked);
+        if(result == 0)
+          result = Random().nextBool() ? 1 : 0;
+        return result;
       });
+      print(unaskedTasks.convert((index, taskIndex) {
+        var task = widget._tasks[taskIndex];
+        return "$taskIndex :: ${task.asked == 0 ? 0 : task.correct/task.asked}";
+      }));
       selectedTask = widget._tasks[unaskedTasks[0]];
     } else {
       int selectedIndex = Random().nextInt(unaskedTasks.length);
