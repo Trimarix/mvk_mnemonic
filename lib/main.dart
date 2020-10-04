@@ -135,88 +135,39 @@ class MnemonicApp extends StatelessWidget {
 final initialData = {
   "selectedMode": true,
   "sections": [
+    getSquareNumbers(1, "Quadratzahlen Basis 1-25", "Gib das Ergebnis unten ein.", Icons.check_box_outline_blank, 2, 25, isBasisVariable: true),
+    getSquareNumbers(2, "2-erpotenzen Exponent 1-12", "Gib das Ergebnis unten ein.", Icons.looks_two, 2, 12),
+    getSquareNumbers(3, "3-erpotenzen Exponent 1-5", "Gib das Ergebnis unten ein.", Icons.looks_3, 3, 5),
+    getSquareNumbers(4, "5-erpotenzen Exponent 1-4", "Gib das Ergebnis unten ein.", Icons.looks_5, 5, 4),
+    getSquareNumbers(5, "6-erpotenzen Exponent 1-3", "Gib das Ergebnis unten ein.", Icons.looks_6, 6, 3),
+    getRoots(6, "Wichtige Wurzeln", "Gib das Ergebnis unten ein.", Icons.arrow_downward, {
+      2: List<int>.generate(24, (index) => index +2),
+      3: [2, 3, 5, 6],
+      4: [2, 3, 5],
+      5: [2, 3],
+      6: [2],
+      7: [2],
+      8: [2],
+      9: [2],
+      10: [2],
+      11: [2],
+      12: [2],
+    }),
+    getLogs(7, "Wichtige Logarithmen", "Gib das Ergebnis unten ein", Icons.arrow_upward, {
+      2: List<int>.generate(24, (index) => index +2),
+      3: [2, 3, 5, 6],
+      4: [2, 3, 5],
+      5: [2, 3],
+      6: [2],
+      7: [2],
+      8: [2],
+      9: [2],
+      10: [2],
+      11: [2],
+      12: [2],
+    }),
     {
-      "id": 1,
-      "name": "Quadratzahlen Basis 1-25",
-      "description": "Gib das Ergebnis unten ein.",
-      "iconData": "0x${Icons.keyboard_arrow_up.codePoint.toRadixString(16)}",
-      "tasks": List<int>.generate(30, (index) => index +1).convert((int i, number) => {
-        "id": "1:$number",
-        "qtype": 1,
-        "atype": 2,
-        "q": "$number^{2}",
-        "a": pow(number, 2).toString(),
-        "star": false,
-        "asked": 0,
-        "correct": 0,
-      }),
-    },
-    {
-      "id": 2,
-      "name": "2-erpotenzen Exponent 1-12",
-      "description": "Gib das Ergebnis unten ein.",
-      "iconData": "0x${Icons.looks_two.codePoint.toRadixString(16)}",
-      "tasks": List<int>.generate(12, (index) => index +1).convert((int i, number) => {
-        "id": "2:$number",
-        "qtype": 1,
-        "atype": 2,
-        "q": "2^{$number}",
-        "a": pow(2, number).toString(),
-        "star": false,
-        "asked": 0,
-        "correct": 0,
-      }),
-    },
-    {
-      "id": 3,
-      "name": "3-erpotenzen Exponent 1-5",
-      "description": "Gib das Ergebnis unten ein.",
-      "iconData": "0x${Icons.looks_3.codePoint.toRadixString(16)}",
-      "tasks": List<int>.generate(5, (index) => index +1).convert((int i, number) => {
-        "id": "3:$number",
-        "qtype": 1,
-        "atype": 2,
-        "q": "3^{$number}",
-        "a": pow(3, number).toString(),
-        "star": false,
-        "asked": 0,
-        "correct": 0,
-      }),
-    },
-    {
-      "id": 4,
-      "name": "5-erpotenzen Exponent 1-4",
-      "description": "Gib das Ergebnis unten ein.",
-      "iconData": "0x${Icons.looks_5.codePoint.toRadixString(16)}",
-      "tasks": List<int>.generate(4, (index) => index +1).convert((int i, number) => {
-        "id": "4:$number",
-        "qtype": 1,
-        "atype": 2,
-        "q": "5^{$number}",
-        "a": pow(5, number).toString(),
-        "star": false,
-        "asked": 0,
-        "correct": 0,
-      }),
-    },
-    {
-      "id": 5,
-      "name": "6-erpotenzen Exponent 1-3",
-      "description": "Gib das Ergebnis unten ein.",
-      "iconData": "0x${Icons.looks_6.codePoint.toRadixString(16)}",
-      "tasks": List<int>.generate(2, (index) => index +1).convert((int i, number) => {
-        "id": "5:$number",
-        "qtype": 1,
-        "atype": 2,
-        "q": "6^{$number}",
-        "a": pow(6, number).toString(),
-        "star": false,
-        "asked": 0,
-        "correct": 0,
-      }),
-    },
-    {
-      "id": 6,
+      "id": 8,
       "name": "Fakultäten bis 8!",
       "description": "Gib das Ergebnis unten ein.",
       "iconData": "0x${Icons.error_outline.codePoint.toRadixString(16)}",
@@ -232,31 +183,31 @@ final initialData = {
         "correct": 0,
       }),
     },
-    getReversedType1Tasks(7, "Binomische Formeln", "Wie lautet das Äquivalent?", Icons.linear_scale, [
+    getReversedType1Tasks(9, "Binomische Formeln", "Wie lautet das Äquivalent?", Icons.linear_scale, [
       ["a^2 + 2ab + b^2", "(a+b)^2"      ],
       ["a^2 - 2ab + b^2", "(a-b)^2"      ],
       ["a^2 - b^2",       "(a+b) * (a-b)"],
     ]),
-    getReversedType1Tasks(8, "Potenzgesetze", "Wie lautet das Äquivalent?", Icons.vertical_align_top, [
+    getReversedType1Tasks(10, "Potenzgesetze", "Wie lautet das Äquivalent?", Icons.vertical_align_top, [
       ["a^x*a^y", "a^{x+y}"],
       ["a^x*b^x", "(ab)^x"],
       ["(a^x)^y", "a^{x*y}"],
       ["a^{−x}",  r"\frac{1}{a^x}"],
       [r"a^{\frac{p}{q}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"],
     ]),
-    getReversedType1Tasks(9, "Logarithmengesetze", "Wie lautet das Äquivalent?", Icons.show_chart, [
+    getReversedType1Tasks(11, "Logarithmengesetze", "Wie lautet das Äquivalent?", Icons.show_chart, [
       ["log(a*b)",          "log(a) + log(b)"],
       [r"log(\frac{a}{b})", "log(a) - log(b)"],
       ["log(a^r)",          "r * log(a)"],
     ]),
-    getReversedType1Tasks(10, "Additionstheoreme", "Wie lautet das Äquivalent?", Icons.add, [
+    getReversedType1Tasks(12, "Additionstheoreme", "Wie lautet das Äquivalent?", Icons.add, [
       ["sin(x+y)", "sin(x) * cos(y) + cos(x) * sin(y)"],
       ["cos(x+y)", "cos(x) * cos(y) − sin(x) * sin(y)"],
       ["sin(2x)",  "2*sin(x)*cos(x)"],
       ["(sin(x))^2 + (cos(x))^2", "1"],
       ["(cosh(x))^2 − (sinh(x))^2", "1"]
     ]),
-    getUnreversedType1Tasks(11, "Werte der tri. Fkt.", "Wie lautet der Wert?", Icons.timeline, [
+    getUnreversedType1Tasks(13, "Werte der trigonometr. Fktn.", "Wie lautet der Wert?", Icons.timeline, [
       ["sin(0)",              r"\frac{1}{2}*\sqrt{0}"],
       [r"sin(\frac{\pi}{6})", r"\frac{1}{2}*\sqrt{1}"],
       [r"sin(\frac{\pi}{4})", r"\frac{1}{2}*\sqrt{2}"],
@@ -281,7 +232,7 @@ final initialData = {
       [r"cot(\frac{\pi}{3})", r"\frac{\sqrt{3}}{3}"],
       [r"cot(\frac{\pi}{2})", r"0"],
     ]),
-    getReversedType1Tasks(12, "Ableitungen und Stammfunktionen", "Leite ab oder bilde die Stammfunktion", Icons.import_export, [
+    getReversedType1Tasks(14, "Ableitungen und Stammfunktionen", "Leite ab oder bilde die Stammfunktion", Icons.import_export, [
       ["(e^x)'",       "e^x"],
       ["(c^x)'",       "ln(c)*c^x"],
       ["(ln(|x|))'",   r"\frac{1}{x}"],
@@ -299,6 +250,80 @@ final initialData = {
     ]),
   ],
 };
+
+getSquareNumbers(int id, String name, String description, IconData iconData,
+  int basisOrExponent, int maxIncl, {int min = 0, bool isBasisVariable = false}
+) => {
+  "id": id,
+  "name": name,
+  "description": description,
+  "iconData": "0x${iconData.codePoint.toRadixString(16)}",
+  "tasks": List<int>.generate(maxIncl - min, (index) => min + index +1).convert((int i, number) => {
+    "id": "$id:$number",
+    "qtype": 1,
+    "atype": 2,
+    "q": isBasisVariable ? "$number^{$basisOrExponent}" : "$basisOrExponent^{$number}",
+    "a": (isBasisVariable ? pow(number, basisOrExponent) : pow(basisOrExponent, number)).toString(),
+    "star": false,
+    "asked": 0,
+    "correct": 0,
+  })/*.xaddAll(List<int>.generate(maxIncl - min, (index) => min + index +1).convert((int i, number) => {
+    "id": "$id:$number",
+    "qtype": 1,
+    "atype": 2,
+    "q": isBasisVariable
+        ? "\\sqrt[$basisOrExponent]{${pow(number, basisOrExponent)}}"
+        : "\\sqrt[$number]{${pow(basisOrExponent, number)}}",
+    "a": (isBasisVariable ? number : basisOrExponent).toString(),
+    "star": false,
+    "asked": 0,
+    "correct": 0,
+  }))*/,
+};
+
+getRoots(int id, String name, String description, IconData iconData,
+    Map<int, List<int>> values) {
+  var tasks = <Map<String, dynamic>>[];
+  values.forEach((exponent, value) => value.forEach((basis) => tasks.add({
+    "id": "$id:${exponent*1000 + basis}",
+    "qtype": 1,
+    "atype": 2,
+    "q": "\\sqrt[$exponent]{${pow(basis, exponent)}}",
+    "a": "$basis",
+    "star": false,
+    "asked": 0,
+    "correct": 0,
+  })));
+  return {
+    "id": id,
+    "name": name,
+    "description": description,
+    "iconData": "0x${iconData.codePoint.toRadixString(16)}",
+    "tasks": tasks,
+  };
+}
+
+getLogs(int id, String name, String description, IconData iconData,
+    Map<int, List<int>> values) {
+  var tasks = <Map<String, dynamic>>[];
+  values.forEach((exponent, value) => value.forEach((basis) => tasks.add({
+    "id": "$id:${exponent*1000 + basis}",
+    "qtype": 1,
+    "atype": 2,
+    "q": "log_$basis(${pow(basis, exponent)})",
+    "a": "$exponent",
+    "star": false,
+    "asked": 0,
+    "correct": 0,
+  })));
+  return {
+    "id": id,
+    "name": name,
+    "description": description,
+    "iconData": "0x${iconData.codePoint.toRadixString(16)}",
+    "tasks": tasks,
+  };
+}
 
 getUnreversedType1Tasks(int id, String name, String description, IconData iconData, List<List<String>> tasks) => {
   "id": id,
