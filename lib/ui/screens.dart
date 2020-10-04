@@ -205,6 +205,7 @@ class QuizScreenState extends State<QuizScreen> {
                 SizedBox(
                   width: 100,
                   child: TextField(
+                    autofocus: answerFieldAutoFocusActive,
                     readOnly: _answerShown,
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,

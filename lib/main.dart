@@ -6,6 +6,7 @@ import 'package:mvk_mnemonic/data/sections.dart';
 import 'package:mvk_mnemonic/ui/home.dart';
 import 'package:mvk_mnemonic/helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:mvk_mnemonic/updates.dart';
 import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -41,6 +42,7 @@ Map<String, dynamic> data;
 // true  => intelligent
 // false => random
 bool selectedMode;
+bool answerFieldAutoFocusActive;
 List<Section> sections;
 
 Section getSectionByID(int id, [returnNull = false]) {
@@ -90,14 +92,16 @@ List<Task> getFavoriteTasks() {
 loadData() async {
   if(dataFile.existsSync()) {
     data = jsonDecode(dataFile.readAsStringSync());
+    checkUpdate(packageInfo.version, data);
   } else {
-    data = initialData;
+    data = initialData();
   }
   processData();
 }
 
 processData() {
   selectedMode = data["selectedMode"];
+  answerFieldAutoFocusActive = data["answerFieldAutoFocus"];
   sections = (data["sections"] as List<dynamic>).convert((int i, serializedSection)
     => Section.deserialize(serializedSection));
 }
@@ -106,6 +110,7 @@ saveData() {
   if(BYPASS_SAVING)
     return;
   data["selectedMode"] = selectedMode;
+  data["answerFieldAutoFocus"] = answerFieldAutoFocusActive;
   data["sections"] = sections.convert((index, deserializedSection)
       => deserializedSection.serialize());
   dataFile.writeAsStringSync(jsonEncode(data));
@@ -113,7 +118,7 @@ saveData() {
 
 resetData() {
   print("resetting data...");
-  data = initialData;
+  data = initialData();
   processData();
 }
 
@@ -132,128 +137,149 @@ class MnemonicApp extends StatelessWidget {
 
 }
 
-final initialData = {
-  "selectedMode": true,
-  "sections": [
-    getSquareNumbers(1, "Quadratzahlen Basis 1-25", "Gib das Ergebnis unten ein.", Icons.check_box_outline_blank, 2, 25, radixIsVariable: true),
-    getSquareNumbers(2, "2-erpotenzen Exponent 1-12", "Gib das Ergebnis unten ein.", Icons.looks_two, 2, 12),
-    getSquareNumbers(3, "3-erpotenzen Exponent 1-5", "Gib das Ergebnis unten ein.", Icons.looks_3, 3, 5),
-    getSquareNumbers(4, "5-erpotenzen Exponent 1-4", "Gib das Ergebnis unten ein.", Icons.looks_5, 5, 4),
-    getSquareNumbers(5, "6-erpotenzen Exponent 1-3", "Gib das Ergebnis unten ein.", Icons.looks_6, 6, 3),
-    getRoots(6, "Wichtige Wurzeln", "Gib das Ergebnis unten ein.", Icons.arrow_downward, {
-      2: List<int>.generate(24, (index) => index +2),
-      3: [2, 3, 5, 6],
-      4: [2, 3, 5],
-      5: [2, 3],
-      6: [2],
-      7: [2],
-      8: [2],
-      9: [2],
-      10: [2],
-      11: [2],
-      12: [2],
-    }),
-    getLogs(7, "Wichtige Logarithmen", "Gib das Ergebnis unten ein", Icons.arrow_upward, {
-      2: List<int>.generate(24, (index) => index +2),
-      3: [2, 3, 5, 6],
-      4: [2, 3, 5],
-      5: [2, 3],
-      6: [2],
-      7: [2],
-      8: [2],
-      9: [2],
-      10: [2],
-      11: [2],
-      12: [2],
-    }),
-    {
-      "id": 8,
-      "name": "Fakultäten bis 8!",
-      "description": "Gib das Ergebnis unten ein.",
-      "iconData": "0x${Icons.error_outline.codePoint.toRadixString(16)}",
-      "tasks": List<int>.generate(8, (index) => index +1).convert((int i, number) => {
-        "id": "6:$number",
-        "qtype": 1,
-        "atype": 2,
-        "q": "$number!",
-        "a": List<int>.generate(number, (index) => index +1)
-            .fold(1, (value, element) => value*element).toString(),
-        "star": false,
-        "asked": 0,
-        "correct": 0,
+Map<String, dynamic> initialData() {
+  var data = <String, dynamic>{
+    "selectedMode": true,
+    "sections": [
+      getSquareNumbers(1, "Quadratzahlen Basis 1-25", "Gib das Ergebnis unten ein.", Icons.check_box_outline_blank, 2, 25, radixIsVariable: true),
+      getSquareNumbers(2, "2-erpotenzen Exponent 1-12", "Gib das Ergebnis unten ein.", Icons.looks_two, 2, 12),
+      getSquareNumbers(3, "3-erpotenzen Exponent 1-5", "Gib das Ergebnis unten ein.", Icons.looks_3, 3, 5),
+      getSquareNumbers(4, "5-erpotenzen Exponent 1-4", "Gib das Ergebnis unten ein.", Icons.looks_5, 5, 4),
+      getSquareNumbers(5, "6-erpotenzen Exponent 1-3", "Gib das Ergebnis unten ein.", Icons.looks_6, 6, 3),
+      getRoots(6, "Wichtige Wurzeln", "Gib das Ergebnis unten ein.", Icons.arrow_downward, {
+        2: List<int>.generate(24, (index) => index +2),
+        3: [2, 3, 5, 6],
+        4: [2, 3, 5],
+        5: [2, 3],
+        6: [2],
+        7: [2],
+        8: [2],
+        9: [2],
+        10: [2],
+        11: [2],
+        12: [2],
       }),
-    },
-    getReversedType1Tasks(9, "Binomische Formeln", "Wie lautet das Äquivalent?", Icons.linear_scale, [
-      ["a^2 + 2ab + b^2", "(a+b)^2"      ],
-      ["a^2 - 2ab + b^2", "(a-b)^2"      ],
-      ["a^2 - b^2",       "(a+b) * (a-b)"],
-    ]),
-    getReversedType1Tasks(10, "Potenzgesetze", "Wie lautet das Äquivalent?", Icons.vertical_align_top, [
-      ["a^x*a^y", "a^{x+y}"],
-      ["a^x*b^x", "(ab)^x"],
-      ["(a^x)^y", "a^{x*y}"],
-      ["a^{−x}",  r"\frac{1}{a^x}"],
-      [r"a^{\frac{p}{q}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"],
-    ]),
-    getReversedType1Tasks(11, "Logarithmengesetze", "Wie lautet das Äquivalent?", Icons.show_chart, [
-      ["log(a*b)",          "log(a) + log(b)"],
-      [r"log(\frac{a}{b})", "log(a) - log(b)"],
-      ["log(a^r)",          "r * log(a)"],
-    ]),
-    getReversedType1Tasks(12, "Additionstheoreme", "Wie lautet das Äquivalent?", Icons.add, [
-      ["sin(x+y)", "sin(x) * cos(y) + cos(x) * sin(y)"],
-      ["cos(x+y)", "cos(x) * cos(y) − sin(x) * sin(y)"],
-      ["sin(2x)",  "2*sin(x)*cos(x)"],
-      ["(sin(x))^2 + (cos(x))^2", "1"],
-      ["(cosh(x))^2 − (sinh(x))^2", "1"]
-    ]),
-    getUnreversedType1Tasks(13, "Werte der trigonometr. Fktn.", "Wie lautet der Wert?", Icons.timeline, [
-      ["sin(0)",              r"\frac{1}{2}*\sqrt{0}"],
-      [r"sin(\frac{\pi}{6})", r"\frac{1}{2}*\sqrt{1}"],
-      [r"sin(\frac{\pi}{4})", r"\frac{1}{2}*\sqrt{2}"],
-      [r"sin(\frac{\pi}{3})", r"\frac{1}{2}*\sqrt{3}"],
-      [r"sin(\frac{\pi}{2})", r"\frac{1}{2}*\sqrt{4}"],
+      getLogs(7, "Wichtige Logarithmen", "Gib das Ergebnis unten ein", Icons.arrow_upward, {
+        2: List<int>.generate(24, (index) => index +2),
+        3: [2, 3, 5, 6],
+        4: [2, 3, 5],
+        5: [2, 3],
+        6: [2],
+        7: [2],
+        8: [2],
+        9: [2],
+        10: [2],
+        11: [2],
+        12: [2],
+      }),
+      {
+        "id": 8,
+        "name": "Fakultäten bis 8!",
+        "description": "Gib das Ergebnis unten ein.",
+        "iconData": "0x${Icons.error_outline.codePoint.toRadixString(16)}",
+        "tasks": List<int>.generate(8, (index) => index +1).convert((int i, number) => {
+          "id": "6:$number",
+          "qtype": 1,
+          "atype": 2,
+          "q": "$number!",
+          "a": List<int>.generate(number, (index) => index +1)
+              .fold(1, (value, element) => value*element).toString(),
+          "star": false,
+          "asked": 0,
+          "correct": 0,
+        }),
+      },
+      getReversedType1Tasks(9, "Binomische Formeln", "Wie lautet das Äquivalent?", Icons.linear_scale, [
+        ["a^2 + 2ab + b^2", "(a+b)^2"      ],
+        ["a^2 - 2ab + b^2", "(a-b)^2"      ],
+        ["a^2 - b^2",       "(a+b) * (a-b)"],
+      ]),
+      getReversedType1Tasks(10, "Potenzgesetze", "Wie lautet das Äquivalent?", Icons.vertical_align_top, [
+        ["a^x*a^y", "a^{x+y}"],
+        ["a^x*b^x", "(ab)^x"],
+        ["(a^x)^y", "a^{x*y}"],
+        ["a^{−x}",  r"\frac{1}{a^x}"],
+        [r"a^{\frac{p}{q}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"],
+      ]),
+      getReversedType1Tasks(11, "Logarithmengesetze", "Wie lautet das Äquivalent?", Icons.show_chart, [
+        ["log(a*b)",          "log(a) + log(b)"],
+        [r"log(\frac{a}{b})", "log(a) - log(b)"],
+        ["log(a^r)",          "r * log(a)"],
+      ]),
+      getReversedType1Tasks(12, "Additionstheoreme", "Wie lautet das Äquivalent?", Icons.add, [
+        ["sin(x+y)", "sin(x) * cos(y) + cos(x) * sin(y)"],
+        ["cos(x+y)", "cos(x) * cos(y) − sin(x) * sin(y)"],
+        ["sin(2x)",  "2*sin(x)*cos(x)"],
+        ["(sin(x))^2 + (cos(x))^2", "1"],
+        ["(cosh(x))^2 − (sinh(x))^2", "1"]
+      ]),
+      getUnreversedType1Tasks(13, "Werte der trigonometr. Fktn.", "Wie lautet der Wert?", Icons.timeline, [
+        ["sin(0)",              r"\frac{1}{2}*\sqrt{0}"],
+        [r"sin(\frac{\pi}{6})", r"\frac{1}{2}*\sqrt{1}"],
+        [r"sin(\frac{\pi}{4})", r"\frac{1}{2}*\sqrt{2}"],
+        [r"sin(\frac{\pi}{3})", r"\frac{1}{2}*\sqrt{3}"],
+        [r"sin(\frac{\pi}{2})", r"\frac{1}{2}*\sqrt{4}"],
 
-      ["cos(0)",              r"\frac{1}{2}*\sqrt{4}"],
-      [r"cos(\frac{\pi}{6})", r"\frac{1}{2}*\sqrt{3}"],
-      [r"cos(\frac{\pi}{4})", r"\frac{1}{2}*\sqrt{2}"],
-      [r"cos(\frac{\pi}{3})", r"\frac{1}{2}*\sqrt{1}"],
-      [r"cos(\frac{\pi}{2})", r"\frac{1}{2}*\sqrt{0}"],
+        ["cos(0)",              r"\frac{1}{2}*\sqrt{4}"],
+        [r"cos(\frac{\pi}{6})", r"\frac{1}{2}*\sqrt{3}"],
+        [r"cos(\frac{\pi}{4})", r"\frac{1}{2}*\sqrt{2}"],
+        [r"cos(\frac{\pi}{3})", r"\frac{1}{2}*\sqrt{1}"],
+        [r"cos(\frac{\pi}{2})", r"\frac{1}{2}*\sqrt{0}"],
 
-      ["tan(0)",              r"0"],
-      [r"tan(\frac{\pi}{6})", r"\frac{\sqrt{3}}{3}"],
-      [r"tan(\frac{\pi}{4})", r"1"],
-      [r"tan(\frac{\pi}{3})", r"\sqrt{3}"],
-      [r"tan(\frac{\pi}{2})", r"-"],
+        ["tan(0)",              r"0"],
+        [r"tan(\frac{\pi}{6})", r"\frac{\sqrt{3}}{3}"],
+        [r"tan(\frac{\pi}{4})", r"1"],
+        [r"tan(\frac{\pi}{3})", r"\sqrt{3}"],
+        [r"tan(\frac{\pi}{2})", r"-"],
 
-      ["cot(0)",              r"-"],
-      [r"cot(\frac{\pi}{6})", r"\sqrt{3}"],
-      [r"cot(\frac{\pi}{4})", r"1"],
-      [r"cot(\frac{\pi}{3})", r"\frac{\sqrt{3}}{3}"],
-      [r"cot(\frac{\pi}{2})", r"0"],
-    ]),
-    getReversedType1Tasks(14, "Ableitungen und Stammfunktionen", "Leite ab oder bilde die Stammfunktion", Icons.import_export, [
-      ["(e^x)'",       "e^x"],
-      ["(c^x)'",       "ln(c)*c^x"],
-      ["(ln(|x|))'",   r"\frac{1}{x}"],
-      ["log_c(|x|))'", r"\frac{1}{ln(c)*x}"],
-      ["(sin(x))'",    "cos(x)"],
-      ["(cos(x))'",    "-sin(x)"],
-      ["(tan(x))'",    r"1+(tan(x))^2 = \frac{1}{(cos(x))^2}"],
-      ["(x^a)'",       r"a*x^{a-1}"],
-      ["(arcsin(x))'", r"\frac{1}{\sqrt{1-x^2}}"],
-      ["(arccos(x))'", r"\frac{-1}{\sqrt{1-x^2}}"],
-      ["(arctan(x))'", r"\frac{1}{1+x^2}"],
-      ["(sinh(x))'",   r"cosh(x)"],
-      ["(cosh(x))'",   r"sinh(x)"],
-      ["(tanh(x))'",   r"1-(tanh(x))^2 = \frac{1}{cosh(x)^2}"],
-    ]),
-  ],
+        ["cot(0)",              r"-"],
+        [r"cot(\frac{\pi}{6})", r"\sqrt{3}"],
+        [r"cot(\frac{\pi}{4})", r"1"],
+        [r"cot(\frac{\pi}{3})", r"\frac{\sqrt{3}}{3}"],
+        [r"cot(\frac{\pi}{2})", r"0"],
+      ]),
+      getReversedType1Tasks(14, "Ableitungen und Stammfunktionen", "Leite ab oder bilde die Stammfunktion", Icons.import_export, [
+        ["(e^x)'",       "e^x"],
+        ["(c^x)'",       "ln(c)*c^x"],
+        ["(ln(|x|))'",   r"\frac{1}{x}"],
+        ["log_c(|x|))'", r"\frac{1}{ln(c)*x}"],
+        ["(sin(x))'",    "cos(x)"],
+        ["(cos(x))'",    "-sin(x)"],
+        ["(tan(x))'",    r"1+(tan(x))^2 = \frac{1}{(cos(x))^2}"],
+        ["(x^a)'",       r"a*x^{a-1}"],
+        ["(arcsin(x))'", r"\frac{1}{\sqrt{1-x^2}}"],
+        ["(arccos(x))'", r"\frac{-1}{\sqrt{1-x^2}}"],
+        ["(arctan(x))'", r"\frac{1}{1+x^2}"],
+        ["(sinh(x))'",   r"cosh(x)"],
+        ["(cosh(x))'",   r"sinh(x)"],
+        ["(tanh(x))'",   r"1-(tanh(x))^2 = \frac{1}{cosh(x)^2}"],
+      ]),
+    ],
+  };
+
+  applyConfigChanges("0.3.1", data);
+  applyConfigChanges("0.3.2", data);
+
+  return data;
+}
+
+final _configChangesByVersion = <String, Map<String, dynamic> Function(Map<String, dynamic>)>{
+  "0.3.1": (Map<String, dynamic> data) => data,
+  "0.3.2": (Map<String, dynamic> data) {
+    data["answerFieldAutoFocus"] = false;
+    return data;
+  },
 };
 
+Map<String, dynamic> applyConfigChanges(String newVersion, Map<String, dynamic> data) {
+  data = _configChangesByVersion[newVersion](data);
+  data["appVersion"] = newVersion;
+  return data;
+}
+
 getSquareNumbers(int id, String name, String description, IconData iconData,
-  int radixOrExponent, int maxIncl, {int min = 0, bool radixIsVariable = false}
-) => {
+    int radixOrExponent, int maxIncl, {int min = 0, bool radixIsVariable = false}
+    ) => {
   "id": id,
   "name": name,
   "description": description,

@@ -21,6 +21,10 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
 
+  static const TYPE_ACTION = 101,
+               TYPE_SELECTED_MODE = 102,
+               TYPE_ANSWER_AUTOFOCUS = 103;
+
   static const ACTION_RESET_DATA = 1,
                ACTION_NO_NOTHING = -1,
                ACTION_SHOW_INFO = 2;
@@ -40,9 +44,14 @@ class HomeState extends State<Home> {
           snap: false,
           actions: <Widget>[
             PopupMenuButton(
-              onSelected: (mode) async {
-                if(mode is int) {
-                  switch(mode) {
+              onSelected: (info) async {
+                if(!(info is List)) {
+                  print("no valid info: $info");
+                  return;
+                }
+                int type = info[0];
+                if(type == TYPE_ACTION) {
+                  switch(info[1]) {
                     case ACTION_RESET_DATA: {
                       await _resetData();
                     } break;
@@ -52,10 +61,16 @@ class HomeState extends State<Home> {
                     case ACTION_NO_NOTHING: {
                     } break;
                   }
-                } else {
+                } else if(type == TYPE_SELECTED_MODE) {
                   setState(() {
-                    selectedMode = mode;
+                    selectedMode = info[1];
                   });
+                } else if(type == TYPE_ANSWER_AUTOFOCUS) {
+                  setState(() {
+                    answerFieldAutoFocusActive = info[1];
+                  });
+                } else {
+                  print("WARNING! No action specified: $info");
                 }
               },
               itemBuilder: (context) => <PopupMenuEntry>[
@@ -69,7 +84,7 @@ class HomeState extends State<Home> {
                   )),
                 ),
                 PopupMenuDivider(height: 0,),
-                PopupMenuItem<bool>(
+                PopupMenuItem(
                   child: Row(
                     children: <Widget>[
                       Padding(
@@ -87,9 +102,9 @@ class HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                  value: true,
+                  value: [TYPE_SELECTED_MODE, true],
                 ),
-                PopupMenuItem<bool>(
+                PopupMenuItem(
                   child: Row(
                     children: <Widget>[
                       Padding(
@@ -107,8 +122,32 @@ class HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                  value: false,
+                  value: [TYPE_SELECTED_MODE, false],
                 ),
+
+                PopupMenuDivider(height: 0,),
+
+                PopupMenuItem(
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(
+                          Icons.subdirectory_arrow_right,
+                          color: answerFieldAutoFocusActive ? Colors.white : Colors.grey
+                        ),
+                      ),
+                      Text(
+                        "Eingabefeld-Autofokus",
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            color: answerFieldAutoFocusActive ? Colors.white : Colors.grey
+                        ),
+                      ),
+                    ],
+                  ),
+                  value: [TYPE_ANSWER_AUTOFOCUS, !answerFieldAutoFocusActive],
+                ),
+
                 PopupMenuDivider(height: 0,),
 
                 PopupMenuItem(
@@ -128,15 +167,17 @@ class HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                  value: ACTION_RESET_DATA,
+                  value: [TYPE_ACTION, ACTION_RESET_DATA],
                 ),
+
+                PopupMenuDivider(height: 0,),
 
                 PopupMenuItem(
                   child: Text(
                     "App-Infos",
                     style: TextStyle(fontFamily: "Courier New", fontSize: 15),
                   ),
-                  value: ACTION_SHOW_INFO,
+                  value: [TYPE_ACTION, ACTION_SHOW_INFO],
                 ),
               ],
             ),
