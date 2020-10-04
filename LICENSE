@@ -26,7 +26,7 @@ https://opensource.org/licenses/mit-license.php
 
 
 
-The license above applies to all files except /android/settings.gradle.
+The license above applies to all files except those described below.
  ----
 The license below applies to all the files from the flutter_view example/template (https://github.com/flutter/flutter/tree/master/examples/flutter_view) and the Flutter binaries in the release .apk files.
 
