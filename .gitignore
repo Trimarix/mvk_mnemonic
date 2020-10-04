@@ -44,3 +44,4 @@ app.*.map.json
 
 # no other_files
 other_files
+all_builds
