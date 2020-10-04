@@ -135,7 +135,7 @@ class MnemonicApp extends StatelessWidget {
 final initialData = {
   "selectedMode": true,
   "sections": [
-    getSquareNumbers(1, "Quadratzahlen Basis 1-25", "Gib das Ergebnis unten ein.", Icons.check_box_outline_blank, 2, 25, isBasisVariable: true),
+    getSquareNumbers(1, "Quadratzahlen Basis 1-25", "Gib das Ergebnis unten ein.", Icons.check_box_outline_blank, 2, 25, radixIsVariable: true),
     getSquareNumbers(2, "2-erpotenzen Exponent 1-12", "Gib das Ergebnis unten ein.", Icons.looks_two, 2, 12),
     getSquareNumbers(3, "3-erpotenzen Exponent 1-5", "Gib das Ergebnis unten ein.", Icons.looks_3, 3, 5),
     getSquareNumbers(4, "5-erpotenzen Exponent 1-4", "Gib das Ergebnis unten ein.", Icons.looks_5, 5, 4),
@@ -252,7 +252,7 @@ final initialData = {
 };
 
 getSquareNumbers(int id, String name, String description, IconData iconData,
-  int basisOrExponent, int maxIncl, {int min = 0, bool isBasisVariable = false}
+  int radixOrExponent, int maxIncl, {int min = 0, bool radixIsVariable = false}
 ) => {
   "id": id,
   "name": name,
@@ -262,34 +262,23 @@ getSquareNumbers(int id, String name, String description, IconData iconData,
     "id": "$id:$number",
     "qtype": 1,
     "atype": 2,
-    "q": isBasisVariable ? "$number^{$basisOrExponent}" : "$basisOrExponent^{$number}",
-    "a": (isBasisVariable ? pow(number, basisOrExponent) : pow(basisOrExponent, number)).toString(),
+    "q": radixIsVariable ? "$number^{$radixOrExponent}" : "$radixOrExponent^{$number}",
+    "a": (radixIsVariable ? pow(number, radixOrExponent) : pow(radixOrExponent, number)).toString(),
     "star": false,
     "asked": 0,
     "correct": 0,
-  })/*.xaddAll(List<int>.generate(maxIncl - min, (index) => min + index +1).convert((int i, number) => {
-    "id": "$id:$number",
-    "qtype": 1,
-    "atype": 2,
-    "q": isBasisVariable
-        ? "\\sqrt[$basisOrExponent]{${pow(number, basisOrExponent)}}"
-        : "\\sqrt[$number]{${pow(basisOrExponent, number)}}",
-    "a": (isBasisVariable ? number : basisOrExponent).toString(),
-    "star": false,
-    "asked": 0,
-    "correct": 0,
-  }))*/,
+  }),
 };
 
 getRoots(int id, String name, String description, IconData iconData,
     Map<int, List<int>> values) {
   var tasks = <Map<String, dynamic>>[];
-  values.forEach((exponent, value) => value.forEach((basis) => tasks.add({
-    "id": "$id:${exponent*1000 + basis}",
+  values.forEach((exponent, value) => value.forEach((radix) => tasks.add({
+    "id": "$id:${exponent*1000 + radix}",
     "qtype": 1,
     "atype": 2,
-    "q": "\\sqrt[$exponent]{${pow(basis, exponent)}}",
-    "a": "$basis",
+    "q": "\\sqrt[$exponent]{${pow(radix, exponent)}}",
+    "a": "$radix",
     "star": false,
     "asked": 0,
     "correct": 0,
@@ -306,11 +295,11 @@ getRoots(int id, String name, String description, IconData iconData,
 getLogs(int id, String name, String description, IconData iconData,
     Map<int, List<int>> values) {
   var tasks = <Map<String, dynamic>>[];
-  values.forEach((exponent, value) => value.forEach((basis) => tasks.add({
-    "id": "$id:${exponent*1000 + basis}",
+  values.forEach((exponent, value) => value.forEach((radix) => tasks.add({
+    "id": "$id:${exponent*1000 + radix}",
     "qtype": 1,
     "atype": 2,
-    "q": "log_$basis(${pow(basis, exponent)})",
+    "q": "log_$radix(${pow(radix, exponent)})",
     "a": "$exponent",
     "star": false,
     "asked": 0,

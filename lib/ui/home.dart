@@ -299,7 +299,7 @@ class HomeState extends State<Home> {
                   builder: (context) => Material(
                     child: InkWell(
                       onTap: () async {
-                        await Clipboard.setData(ClipboardData(text: "github.com/Trimarix"));
+                        await Clipboard.setData(ClipboardData(text: "https://github.com/Trimarix/mvk_mnemonic"));
                         Scaffold.of(context).showSnackBar(SnackBar(
                           content: Text("Kopiert!"),
                           duration: Duration(seconds: 1, milliseconds: 500),
@@ -370,7 +370,7 @@ SOFTWARE."""
                     child: ListTile(
                       leading: Icon(Icons.description),
                       title: Text("Lizenz: MIT-Lizenz"),
-                      subtitle: Text("Bitte klicken"),
+                      subtitle: Text("Bitte tippen"),
                     ),
                   ),
                 ),
@@ -381,7 +381,7 @@ SOFTWARE."""
                     child: ListTile(
                       leading: Icon(Icons.perm_device_information),
                       title: Text("Erweiterte Lizenzinformationen"),
-                      subtitle: Text("Bitte klicken"),
+                      subtitle: Text("Bitte tippen"),
                     ),
                   ),
                 ),
@@ -856,7 +856,7 @@ getPackageLicensingTile(BuildContext context) => Material(
     child: ListTile(
       leading: Icon(Icons.description),
       title: Text("Lizenzinfos für Packages",),
-      subtitle: Text("Bitte klicken",),
+      subtitle: Text("Bitte tippen",),
     ),
   ),
 );
