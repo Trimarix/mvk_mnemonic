@@ -27,7 +27,7 @@ https://opensource.org/licenses/mit-license.php
 
 
 The license above applies to all files except /android/settings.gradle.
-The license below applies to the files /android/settings.gradle.
+The license below applies to the file /android/settings.gradle and the Flutter binaries in the release .apk files.
 
 
 
