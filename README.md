@@ -7,7 +7,7 @@
 ## Screenshots
 
 Übersicht | Menü | Aufgaben-Screen 1
-: --- :|: --- :|: --- :
+--------- | ---- | -----------------
 ![Übersicht](screenshots/1_Overview.png) | ![Menü](screenshots/2_Menu.png) | ![Aufgaben-Screen1](screenshots/3_TaskScreen1.png)
 **Aufgaben-Screen 2** | **Aufgaben-Screen 2**
 ![Übersicht](screenshots/4_TaskScreen2.png) | ![Menü](screenshots/5_TaskScreen3.png)
