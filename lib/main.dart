@@ -41,6 +41,7 @@ void main() async {
 Map<String, dynamic> data;
 // true  => intelligent
 // false => random
+String appVersion;
 bool selectedMode;
 bool answerFieldAutoFocusActive;
 List<Section> sections;
@@ -92,7 +93,6 @@ List<Task> getFavoriteTasks() {
 loadData() async {
   if(dataFile.existsSync()) {
     data = jsonDecode(dataFile.readAsStringSync());
-    checkUpdate(packageInfo.version, data);
   } else {
     data = initialData();
   }
@@ -100,15 +100,18 @@ loadData() async {
 }
 
 processData() {
+  appVersion = data["appVersion"] == null ? "0.3.0" : data["appVersion"];
   selectedMode = data["selectedMode"];
   answerFieldAutoFocusActive = data["answerFieldAutoFocus"];
   sections = (data["sections"] as List<dynamic>).convert((int i, serializedSection)
     => Section.deserialize(serializedSection));
+  checkUpdate(packageInfo.version);
 }
 
 saveData() {
   if(BYPASS_SAVING)
     return;
+  data["appVersion"] = appVersion;
   data["selectedMode"] = selectedMode;
   data["answerFieldAutoFocus"] = answerFieldAutoFocusActive;
   data["sections"] = sections.convert((index, deserializedSection)
@@ -139,6 +142,7 @@ class MnemonicApp extends StatelessWidget {
 
 Map<String, dynamic> initialData() {
   var data = <String, dynamic>{
+    "version": "0.3.0",
     "selectedMode": true,
     "sections": [
       getSquareNumbers(1, "Quadratzahlen Basis 1-25", "Gib das Ergebnis unten ein.", Icons.check_box_outline_blank, 2, 25, radixIsVariable: true),
@@ -199,7 +203,8 @@ Map<String, dynamic> initialData() {
         ["a^x*b^x", "(ab)^x"],
         ["(a^x)^y", "a^{x*y}"],
         ["a^{−x}",  r"\frac{1}{a^x}"],
-        [r"a^{\frac{p}{q}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"],
+        [r"a^{\frac{p}{q}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"], // 0.3.3 change: add '}'
+        // [r"a^{\frac{p}{q}}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"], <-- correct
       ]),
       getReversedType1Tasks(11, "Logarithmengesetze", "Wie lautet das Äquivalent?", Icons.show_chart, [
         ["log(a*b)",          "log(a) + log(b)"],
@@ -210,6 +215,7 @@ Map<String, dynamic> initialData() {
         ["sin(x+y)", "sin(x) * cos(y) + cos(x) * sin(y)"],
         ["cos(x+y)", "cos(x) * cos(y) − sin(x) * sin(y)"],
         ["sin(2x)",  "2*sin(x)*cos(x)"],
+//      ], unreversedTasks: [ <-- correct || 0.3.3 change: only unreversed
         ["(sin(x))^2 + (cos(x))^2", "1"],
         ["(cosh(x))^2 − (sinh(x))^2", "1"]
       ]),
@@ -257,24 +263,38 @@ Map<String, dynamic> initialData() {
     ],
   };
 
-  applyConfigChanges("0.3.1", data);
-  applyConfigChanges("0.3.2", data);
-
   return data;
 }
 
-final _configChangesByVersion = <String, Map<String, dynamic> Function(Map<String, dynamic>)>{
-  "0.3.1": (Map<String, dynamic> data) => data,
-  "0.3.2": (Map<String, dynamic> data) {
-    data["answerFieldAutoFocus"] = false;
-    return data;
+final _configChangesByVersion = <String, Function()>{
+  "0.3.1": () {},
+  "0.3.2": () {
+    answerFieldAutoFocusActive = false;
+  },
+  "0.3.3": () {
+    var tasks10 = getSectionByID(10).tasks;
+    for(int i = 0; i < tasks10.length; i++) {
+      var task = tasks10[i];
+      if(task.id == 5)
+        task.q = r"a^{\frac{p}{q}}";
+      else if(task.id == 10)
+        task.a = r"a^{\frac{p}{q}}";
+    }
+
+    var tasks12 = getSectionByID(12).tasks;
+    var tasksToRemove = <int>[];
+    for(int i = 0; i < tasks12.length; i++) {
+      var task = tasks12[i];
+      if(task.id == 9 || task.id == 10)
+        tasksToRemove.add(i);
+    }
+    tasksToRemove.reversed.forEach((index) => tasks12.removeAt(index)); // reverse to prevent index shift
   },
 };
 
-Map<String, dynamic> applyConfigChanges(String newVersion, Map<String, dynamic> data) {
-  data = _configChangesByVersion[newVersion](data);
-  data["appVersion"] = newVersion;
-  return data;
+applyConfigChanges(String newVersion) {
+  _configChangesByVersion[newVersion]();
+  appVersion = newVersion;
 }
 
 getSquareNumbers(int id, String name, String description, IconData iconData,
@@ -357,9 +377,11 @@ getUnreversedType1Tasks(int id, String name, String description, IconData iconDa
   }),
 };
 
-getReversedType1Tasks(int id, String name, String description, IconData iconData, List<List<String>> tasks) {
-  var length = tasks.length;
+getReversedType1Tasks(int id, String name, String description, IconData iconData, List<List<String>> reversedTasks, {List<List<String>> unreversedTasks}) {
+  var length = reversedTasks.length;
   for(int i = 0; i < length; i++)
-    tasks.add([tasks[i][1], tasks[i][0]]);
-  return getUnreversedType1Tasks(id, name, description, iconData, tasks);
+    reversedTasks.add([reversedTasks[i][1], reversedTasks[i][0]]);
+  if(unreversedTasks != null)
+    reversedTasks.addAll(unreversedTasks);
+  return getUnreversedType1Tasks(id, name, description, iconData, reversedTasks);
 }
