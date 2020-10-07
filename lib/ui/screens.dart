@@ -78,6 +78,7 @@ class QuizScreenState extends State<QuizScreen> {
   bool _keyboardShown;
   bool _answerShown;
   var _inputFieldCtrl = TextEditingController();
+  var _inputFieldFocusNode = FocusNode();
 
   StreamSubscription<bool> _keyboardVisibilityStrSub;
 
@@ -85,7 +86,6 @@ class QuizScreenState extends State<QuizScreen> {
   void initState() {
     super.initState();
     _askedTasks = [];
-    _selectedTask = _selectTask();
     _keyboardShown = false;
     _answerShown = false;
     _keyboardVisibilityStrSub = KeyboardVisibility.onChange.listen((bool shown) {
@@ -93,6 +93,9 @@ class QuizScreenState extends State<QuizScreen> {
         _keyboardShown = shown;
       });
     });
+    _selectedTask = _selectTask();
+    if(answerFieldAutoFocusActive)
+      _inputFieldFocusNode.requestFocus();
   }
 
 
@@ -205,7 +208,7 @@ class QuizScreenState extends State<QuizScreen> {
                 SizedBox(
                   width: 100,
                   child: TextField(
-                    autofocus: answerFieldAutoFocusActive,
+                    focusNode: _inputFieldFocusNode,
                     readOnly: _answerShown,
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
@@ -398,8 +401,9 @@ class QuizScreenState extends State<QuizScreen> {
         _inputFieldCtrl.text = "";
         _selectedTask = newTask;
         _answerShown = false;
-      }
-      else {
+        if(answerFieldAutoFocusActive)
+          _inputFieldFocusNode.requestFocus();
+      } else {
         showDialog(
           context: context,
           builder: (context) => Panel(
