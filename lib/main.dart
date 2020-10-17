@@ -203,8 +203,8 @@ Map<String, dynamic> initialData() {
         ["a^x*b^x", "(ab)^x"],
         ["(a^x)^y", "a^{x*y}"],
         ["a^{−x}",  r"\frac{1}{a^x}"],
-        [r"a^{\frac{p}{q}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"], // 0.3.3 change: add '}'
-        // [r"a^{\frac{p}{q}}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"], <-- correct
+        [r"a^{\frac{p}{q}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"], // 0.3.3 change: add '}', 0.4.0 change: change p to b
+        // [r"a^{\frac{b}{q}}", r"\sqrt[q]{a^b} = \sqrt[q]{a}^b"], <-- correct
       ]),
       getReversedType1Tasks(11, "Logarithmengesetze", "Wie lautet das Äquivalent?", Icons.show_chart, [
         ["log(a*b)",          "log(a) + log(b)"],
@@ -289,6 +289,16 @@ final _configChangesByVersion = <String, Function()>{
         tasksToRemove.add(i);
     }
     tasksToRemove.reversed.forEach((index) => tasks12.removeAt(index)); // reverse to prevent index shift
+  },
+  "0.4.0": () {
+    var tasks10 = getSectionByID(10).tasks;
+    for(int i = 0; i < tasks10.length; i++) {
+      var task = tasks10[i];
+      if(task.id == 5)
+        task.q = r"a^{\frac{b}{q}}";
+      else if(task.id == 10)
+        task.a = r"a^{\frac{b}{q}}";
+    }
   },
 };
 
