@@ -79,6 +79,7 @@ class QuizScreenState extends State<QuizScreen> {
   bool _answerShown;
   var _inputFieldCtrl = TextEditingController();
   var _inputFieldFocusNode = FocusNode();
+  var _nextTaskTimer = Timer(Duration.zero, () {});
 
   StreamSubscription<bool> _keyboardVisibilityStrSub;
 
@@ -218,8 +219,15 @@ class QuizScreenState extends State<QuizScreen> {
                     ),
                     onSubmitted: (val) {
                       setState(() => _showAnswer(
-                          _inputFieldCtrl.text.trim() == _selectedTask.a)
-                      );
+                          _inputFieldCtrl.text.trim() == _selectedTask.a
+                      ));
+                      if(nextTaskAutoActive) {
+                        _nextTaskTimer.cancel();
+                        _nextTaskTimer = Timer(
+                            Duration(seconds: 3),
+                            () => _next(),
+                        );
+                      }
                     },
                   ),
                 ),
@@ -255,8 +263,10 @@ class QuizScreenState extends State<QuizScreen> {
                   width: MediaQuery.of(context).size.width,
                   child: OutlineButton(
                     child: Text("weiter"),
-                    onPressed: ()
-                      => _next(),
+                    onPressed: () {
+                      _nextTaskTimer.cancel();
+                      _next();
+                    },
                   ),
               )
               : Container(width: 0, height: 0,)

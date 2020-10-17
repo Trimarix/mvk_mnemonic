@@ -23,7 +23,8 @@ class HomeState extends State<Home> {
 
   static const TYPE_ACTION = 101,
                TYPE_SELECTED_MODE = 102,
-               TYPE_ANSWER_AUTOFOCUS = 103;
+               TYPE_ANSWER_AUTOFOCUS = 103,
+               TYPE_NEXT_TASK_AUTO = 104;
 
   static const ACTION_RESET_DATA = 1,
                ACTION_NO_NOTHING = -1,
@@ -68,6 +69,10 @@ class HomeState extends State<Home> {
                 } else if(type == TYPE_ANSWER_AUTOFOCUS) {
                   setState(() {
                     answerFieldAutoFocusActive = info[1];
+                  });
+                } else if(type == TYPE_NEXT_TASK_AUTO) {
+                  setState(() {
+                    nextTaskAutoActive = info[1];
                   });
                 } else {
                   print("WARNING! No action specified: $info");
@@ -146,6 +151,27 @@ class HomeState extends State<Home> {
                     ],
                   ),
                   value: [TYPE_ANSWER_AUTOFOCUS, !answerFieldAutoFocusActive],
+                ),
+
+                PopupMenuItem(
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(
+                            Icons.timer,
+                            color: nextTaskAutoActive ? Colors.white : Colors.grey
+                        ),
+                      ),
+                      Text(
+                        "automatisch weiter",
+                        style: Theme.of(context).textTheme.subtitle1.copyWith(
+                            color: nextTaskAutoActive ? Colors.white : Colors.grey
+                        ),
+                      ),
+                    ],
+                  ),
+                  value: [TYPE_NEXT_TASK_AUTO, !nextTaskAutoActive],
                 ),
 
                 PopupMenuDivider(height: 0,),

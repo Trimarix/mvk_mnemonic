@@ -44,6 +44,7 @@ Map<String, dynamic> data;
 String appVersion;
 bool selectedMode;
 bool answerFieldAutoFocusActive;
+bool nextTaskAutoActive;
 List<Section> sections;
 
 Section getSectionByID(int id, [returnNull = false]) {
@@ -103,6 +104,7 @@ processData() {
   appVersion = data["appVersion"] == null ? "0.3.0" : data["appVersion"];
   selectedMode = data["selectedMode"];
   answerFieldAutoFocusActive = data["answerFieldAutoFocus"];
+  nextTaskAutoActive = data["nextTaskAuto"];
   sections = (data["sections"] as List<dynamic>).convert((int i, serializedSection)
     => Section.deserialize(serializedSection));
   checkUpdate(packageInfo.version);
@@ -114,6 +116,7 @@ saveData() {
   data["appVersion"] = appVersion;
   data["selectedMode"] = selectedMode;
   data["answerFieldAutoFocus"] = answerFieldAutoFocusActive;
+  data["nextTaskAuto"] = nextTaskAutoActive;
   data["sections"] = sections.convert((index, deserializedSection)
       => deserializedSection.serialize());
   dataFile.writeAsStringSync(jsonEncode(data));
@@ -291,6 +294,8 @@ final _configChangesByVersion = <String, Function()>{
     tasksToRemove.reversed.forEach((index) => tasks12.removeAt(index)); // reverse to prevent index shift
   },
   "0.4.0": () {
+    nextTaskAutoActive = false;
+
     var tasks10 = getSectionByID(10).tasks;
     for(int i = 0; i < tasks10.length; i++) {
       var task = tasks10[i];
